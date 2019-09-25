@@ -1,8 +1,8 @@
 # Prerequisites
-*.d
+*.direct
 
 # Object files
-*.o
+*.camera
 *.ko
 *.obj
 *.elf
