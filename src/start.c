@@ -40,6 +40,28 @@ t_vector to_vieport(float x, float y)
     return (vector);
 }
 
+t_sphere new_sphere(t_vector center, float radius, t_color color)
+{
+	t_sphere res;
+
+	res.center = center;
+	res.radius = radius;
+	res.color = color;
+	return res;
+}
+
+void	prepare_objects(t_app *app)
+{
+	int i;
+
+	i = -1;
+	while (++i < app->scene.amount)
+	{
+		app->scene.spheres[i] = new_sphere(set_vertex(i + 1, 0, i + 4),
+				i * 3 + 1, set_color(30 * i + 100, 20 * i + 120, 20 * i + 120));
+	}
+}
+
 void	start_the_game(t_app *app)
 {
 	t_vector	camera;
@@ -48,16 +70,8 @@ void	start_the_game(t_app *app)
 	color.red = 0;
 	color.green = 200;
 	color.blue = 10;
-	t_sphere	scene[4];
 
-	scene[0].center.x = 0;
-	scene[0].center.y = 0;
-	scene[0].center.z = 15;
-	scene[0].radius = 3.0f;
-	scene[0].color.red = 255;
-	scene[0].color.green = 0;
-	scene[0].color.blue = 255;
-
+	prepare_objects(app);
 
 	camera = set_vertex(0.0f, 0.0f, -5.50f);
 	while (1)
@@ -75,7 +89,7 @@ void	start_the_game(t_app *app)
             {
 
 		        direct = to_vieport(x , y);
-                color = raytrace(camera, direct, 1, 999999, scene);
+                color = raytrace(camera, direct, 1, 999999, app);
                 set_pixel(app->sdl->surface, x, y, color);
 		        x++;
             }

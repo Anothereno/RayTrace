@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/30 19:03:11 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/09/25 17:52:51 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/09/25 18:22:01 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # define SCREEN_HEIGHT 480
 # define CENTER_WIDTH (SCREEN_WIDTH / 2)
 # define CENTER_HEIGHT (SCREEN_HEIGHT / 2)
+# define AMOUNT_OBJECTS 2
 
 typedef struct s_vec
 {
@@ -55,10 +56,32 @@ typedef struct		s_sdl
 	int				width;
 }					t_sdl;
 
+typedef struct s_color
+{
+    int red;
+    int green;
+    int blue;
+}				t_color;
+
+typedef struct s_sphere
+{
+    int 		mode;
+    t_vector	center;
+    float		radius;
+    t_color		color;
+}				t_sphere;
+
+typedef struct s_scene
+{
+    int amount;
+    t_sphere *spheres;
+}               t_scene;
+
 typedef struct	s_app
 {
 	t_sdl		*sdl;
 	const Uint8 *keys;
+	t_scene     scene;
 }				t_app;
 //typedef struct  s_sdl
 //{
@@ -92,20 +115,6 @@ typedef struct	s_app
 //// t_rectangles_list *rect_list;
 //}     t_app;
 
-typedef struct s_color
-{
-	int red;
-	int green;
-	int blue;
-}				t_color;
-
-typedef struct s_sphere
-{
-	int 		mode;
-	t_vector	center;
-	float		radius;
-	t_color		color;
-}				t_sphere;
 
 
 
@@ -128,7 +137,7 @@ void			start_the_game(t_app *app);
 t_vector 		field_to_view(int x, int y);
 
 t_color			raytrace(t_vector camera, t_vector directory,
-                        int length_min, int length_max, t_sphere spheres[4]);
+                        int length_min, int length_max, t_app *app);
 t_vector 		set_vertex(float x, float y, float z);
 
 float vector_dot(t_vector first, t_vector second);
