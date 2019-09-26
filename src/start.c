@@ -50,17 +50,58 @@ t_sphere new_sphere(t_vector center, float radius, t_color color)
 	return res;
 }
 
+t_light new_light(t_vector direct, float intensity, char type)
+{
+	t_light res;
+
+	res.intensity = intensity;
+	res.direct = direct;
+	res.type = type;
+	return res;
+}
+
+float	clamp(int min, int max, int num)
+{
+	if (num < min)
+		return (min);
+	else if (num > max)
+		return (max);
+	return (num);
+}
+
 void	prepare_objects(t_app *app)
 {
 	int i;
 
 	i = -1;
-	while (++i < app->scene.amount)
+	while (++i < app->scene.objects_amount)
 	{
-		app->scene.spheres[i] = new_sphere(set_vertex(i + 1, 0, i + 4),
-				i * 3 + 1, set_color(30 * i + 100, 20 * i + 120, 20 * i + 120));
+		app->scene.spheres[i] = new_sphere(set_vertex(i - 2, 0, i * 2),
+				i + 2, set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120));
+	}
+	app->scene.spheres[2].center = set_vertex(0, -5001, 0);
+	app->scene.spheres[2].radius = 5000;
+	app->scene.spheres[2].color = set_color(255, 255, 0);
+
+}
+
+void	prepare_ligth(t_app *app)
+{
+	int i;
+
+	i = -1;
+	while (++i < app->scene.lights_amount)
+	{
+		app->scene.lights[i] = new_light(set_vertex(-3, 2, -4), 2.0f, 'p');
 	}
 }
+
+//t_vector rotation_y(t_app *app, t_vector viewport)
+//{
+//	t_vector res;
+//
+//	res.x = viewport.x * cosf(app.)
+//}
 
 void	start_the_game(t_app *app)
 {
@@ -71,9 +112,10 @@ void	start_the_game(t_app *app)
 	color.green = 200;
 	color.blue = 10;
 
+	prepare_ligth(app);
 	prepare_objects(app);
 
-	camera = set_vertex(0.0f, 0.0f, -5.50f);
+	app->camera.camera = set_vertex(0.0f, 0.0f, -5.50f);
 	while (1)
 	{
 	    float x = 0;
@@ -87,9 +129,10 @@ void	start_the_game(t_app *app)
 		    x = 0;
 		    while (x < SCREEN_WIDTH)
             {
-
-		        direct = to_vieport(x , y);
-                color = raytrace(camera, direct, 1, 999999, app);
+				app->scene.cur_object = 0;
+		        app->camera.direct = to_vieport(x , y);
+                color = raytrace(app->camera.camera,
+                		app->camera.direct, 1, 999999, app);
                 set_pixel(app->sdl->surface, x, y, color);
 		        x++;
             }

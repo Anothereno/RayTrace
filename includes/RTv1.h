@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/30 19:03:11 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/09/25 18:22:01 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/09/26 19:14:12 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,19 @@
 //# include <SDL_ttf.h>
 # define BLOCK_SIZE	64
 # define RAD 0.0174533
-# define SCREEN_WIDTH 640
-# define SCREEN_HEIGHT 480
+# define SCREEN_WIDTH 800
+# define SCREEN_HEIGHT 600
 # define CENTER_WIDTH (SCREEN_WIDTH / 2)
 # define CENTER_HEIGHT (SCREEN_HEIGHT / 2)
-# define AMOUNT_OBJECTS 2
+# define AMOUNT_OBJECTS 3
+# define AMOUNT_LIGHTS 2
 
-typedef struct s_vec
+typedef struct s_vector
 {
     float x;
     float y;
     float z;
+    float distance;
 }				t_vector;
 
 typedef struct      s_ray
@@ -56,12 +58,25 @@ typedef struct		s_sdl
 	int				width;
 }					t_sdl;
 
+typedef struct s_camera
+{
+	t_vector camera;
+	t_vector direct;
+}				t_camera;
+
 typedef struct s_color
 {
     int red;
     int green;
     int blue;
 }				t_color;
+
+typedef struct s_ligth
+{
+	char		type;
+	float		intensity;
+	t_vector	direct;
+}				t_light;
 
 typedef struct s_sphere
 {
@@ -71,10 +86,22 @@ typedef struct s_sphere
     t_color		color;
 }				t_sphere;
 
+typedef struct s_rotate
+{
+	float x;
+	float y;
+	float z;
+}				t_rotate;
+
 typedef struct s_scene
 {
-    int amount;
-    t_sphere *spheres;
+    int objects_amount;
+    int	cur_object;
+	t_sphere *spheres;
+	t_light	 *lights;
+	int lights_amount;
+	int cur_light_control;
+	t_rotate	rotate;
 }               t_scene;
 
 typedef struct	s_app
@@ -82,6 +109,8 @@ typedef struct	s_app
 	t_sdl		*sdl;
 	const Uint8 *keys;
 	t_scene     scene;
+	t_camera	camera;
+
 }				t_app;
 //typedef struct  s_sdl
 //{
@@ -136,7 +165,7 @@ void			init_app(t_app *app);
 void			start_the_game(t_app *app);
 t_vector 		field_to_view(int x, int y);
 
-t_color			raytrace(t_vector camera, t_vector directory,
+t_color			raytrace(t_vector camera, t_vector direct,
                         int length_min, int length_max, t_app *app);
 t_vector 		set_vertex(float x, float y, float z);
 
@@ -154,7 +183,7 @@ t_vector	vec_mul_by(t_vector v, float k);
 t_vector	vec_div_by(t_vector v, float k);
 t_vector	vec_invert(t_vector v);
 t_vector	vec_point_at(t_vector ori, t_vector dir, float t);
-
+float		clamp(int min, int max, int num);
 
 t_color set_color(int red, int green, int blue);
 #endif
