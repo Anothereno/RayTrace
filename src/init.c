@@ -1,17 +1,5 @@
 #include "RTv1.h"
 
-void	create_stuff(t_app *app)
-{
-
-}
-
-void	init_sdl(t_sdl *sdl)
-{
-
-	//sdl->timer->delta_ticks = 0;
-	//sdl->timer->delta = 0.0f;
-}
-
 void	init_app(t_app *app)
 {
 
@@ -33,8 +21,4 @@ void	init_app(t_app *app)
     app->scene.lights = (t_light*)malloc(sizeof(t_light)
 										   * app->scene.lights_amount);
     app->scene.cur_light_control = 0;
-    //bzero(app->sdl, sizeof(t_sdl));
-	//init_sdl(app->sdl);
-	//create_stuff(app);
-	//app->inputs = (t_inputs *)malloc(sizeof(t_inputs));
 }

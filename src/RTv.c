@@ -12,52 +12,6 @@
 
 #include "RTv1.h"
 
-//int		main(int argc, char **argv)
-//{
-//	t_app		my_app;
-//	t_map		map;
-//	t_map		objects;
-//	t_player	player;
-//
-//	my_app.start_tick = 0;
-//	if (argc == 2)
-//	{
-//		if (!val_set(argv[1], &map, &objects, &player))
-//			exit(0);
-//		init(&my_app, &map, &player, &objects);
-//		my_app.key_menu = SDL_GetKeyboardState(NULL);
-//		if (my_app.fullscreen_mode)
-//			SDL_SetWindowFullscreen(my_app.win, -1);
-//		main_loop(my_app, map, objects, player);
-//	}
-//	else
-//		usage();
-//	return (0);
-//}
-
-t_vector field_to_view(int x, int y)
-{
-	float v_h, v_w, d;
-	t_vector res;
-	float u_scale, v_scale;
-
-	v_h = 1;
-	v_w = 1;
-	d = 1;
-//	res.x = x * (1.0f / SCREEN_WIDTH);
-//	res.y = y * (1.0f / SCREEN_HEIGHT);
-	u_scale = SCREEN_WIDTH > SCREEN_HEIGHT ? (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT : 1.0f;
-	v_scale = SCREEN_HEIGHT > SCREEN_WIDTH ? (float)SCREEN_HEIGHT / (float)SCREEN_WIDTH : 1.0f;
-
-	res.x = ((float)x / (SCREEN_WIDTH - 1)) - 0.5f;
-	res.y = 0.5f - ((float)y / (SCREEN_HEIGHT - 1));
-	res.x *= u_scale;
-	res.y *= v_scale;
-	res.z = d;
-
-	return res;
-}
-
 t_vector set_vertex(float x, float y, float z)
 {
 	t_vector res;
@@ -93,8 +47,18 @@ t_vector	vector_div_scal(t_vector first, float num)
 	t_vector res;
 
 	res.x = first.x / num;
-	res.y = first.y - num;
-	res.z = first.z - num;
+	res.y = first.y / num;
+	res.z = first.z / num;
+	return (res);
+}
+
+t_vector	vector_mult_scal(t_vector first, float num)
+{
+	t_vector res;
+
+	res.x = first.x * num;
+	res.y = first.y * num;
+	res.z = first.z * num;
 	return (res);
 }
 
@@ -131,27 +95,9 @@ float vector_length(t_vector vector)
 	return (sqrtf(vector_dot(vector, vector)));
 }
 
-
-
 t_sphere_intersect intersect_ray_sphere(t_vector camera, t_vector direct,
 										t_sphere sphere)
 {
-//    t_vector    oc;
-//    float	a;
-//    float	b;
-//    float	c;
-//    float	discriminant;
-//
-//    oc = vector_sub(camera, spheres.center);
-//    a = vector_dot(direct, direct);
-//    b = 2.0f * vector_dot(oc, direct);
-//    c = vector_dot(oc, oc) - spheres.radius * spheres.radius;
-//
-//    discriminant = b * b - 4 * a * c;
-//    float t1 = (-b + sqrtf(discriminant)) / (2.0f * a);
-//    float t2 = (-b - sqrtf(discriminant)) / (2.0f * a);
-//    return (t1 > -1.0f);
-
 	t_vector oc;
 	float a;
 	float b;
@@ -192,12 +138,15 @@ int 	between(float min, float max, float num)
 	return (0);
 }
 
-float 	light_calculate(t_vector plane, t_vector normal, t_app *app)
+float 	light_calculate(t_vector plane, t_vector normal, t_app *app, int specular)
 {
 	float res;
-	t_vector temp;
+	t_vector L;
+	t_vector R;
+	t_vector V;
 	int i;
 	float dot;
+	float rot;
 
 	i = -1;
 	res = 0.0f;
@@ -208,13 +157,23 @@ float 	light_calculate(t_vector plane, t_vector normal, t_app *app)
 		else
 		{
 			if (app->scene.lights[i].type == 'p')
-				temp = vector_sub(app->scene.lights[i].direct, plane);
+				L = vector_sub(app->scene.lights[i].direct, plane);
 			else
-				temp = app->scene.lights[i].direct;
-			dot = vector_dot(normal, temp);
+				L = app->scene.lights[i].direct;
+			dot = vector_dot(normal, L);
 			if (dot > 0)
 				res += app->scene.lights[i].intensity * dot /
-						(vector_length(normal) * vector_length(temp));
+						(vector_length(normal) * vector_length(L));
+			if(specular != -1)
+			{
+				V = vec_invert(app->camera.direct);
+				R = vector_mult_scal(normal, 2);
+				R = vector_mult_scal(R, dot);
+				R = vector_sub(R, L);
+				rot = vector_dot(R, V);
+				if (rot > 0)
+					res += app->scene.lights[i].intensity * pow(rot / (vector_length(R) * vector_length(V)), specular);
+			}
 		}
 	}
 	return (res);
@@ -233,9 +192,9 @@ t_color pallete(t_color color, float num)
 t_color raytrace(t_vector camera, t_vector direct,
 				 int length_min, int length_max, t_app *app)
 {
-	float closest_intersect;
-	t_sphere closest_object;
-	t_sphere_intersect   intersect;
+	float				closest_intersect;
+	t_sphere			closest_object;
+	t_sphere_intersect	intersect;
 	t_vector			plane;
 	t_vector			normal;
 	int					i;
@@ -251,7 +210,6 @@ t_color raytrace(t_vector camera, t_vector direct,
 		if (between(length_min, length_max, intersect.first) &&
 			intersect.first < closest_intersect)
 		{
-
 			closest_intersect = intersect.first;
 			closest_object = app->scene.spheres[i];
 			closest_object.mode = 1;
@@ -263,14 +221,11 @@ t_color raytrace(t_vector camera, t_vector direct,
 			closest_object = app->scene.spheres[i];
 			closest_object.mode = 1;
 		}
-
 	}
 	if (!closest_object.mode)
 		return (set_color(0, 0, 0));
-//	return (closest_object.color);
 	plane = vector_add(camera, vector_dot_scal(direct, closest_intersect));
 	normal = vector_sub(plane, closest_object.center);
 	normal = vector_div_scal(normal, vector_length(normal));
-	return pallete(closest_object.color,
-			light_calculate(plane, normal, app));
+	return pallete(closest_object.color, light_calculate(plane, normal, app, closest_object.specular));
 }

@@ -40,14 +40,30 @@ t_vector to_vieport(float x, float y)
     return (vector);
 }
 
-t_sphere new_sphere(t_vector center, float radius, t_color color)
+t_vector to_vieport2(int x, int y)
 {
-	t_sphere res;
+	t_vector vector;
+
+	float u_scale = SCREEN_WIDTH > SCREEN_HEIGHT ? (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT : 1.0f;
+	float v_scale = SCREEN_HEIGHT > SCREEN_WIDTH ? (float)SCREEN_HEIGHT / (float)SCREEN_WIDTH : 1.0f;
+
+	vector.x = (float)x / (SCREEN_WIDTH - 1) - 0.5;
+	vector.y = 0.5f - (float)y / (SCREEN_HEIGHT - 1);
+	vector.x *= u_scale;
+	vector.y *= v_scale;
+	vector.z = 1.0f;
+	return (vector);
+}
+
+t_sphere new_sphere(t_vector center, float radius, t_color color, int specular)
+{
+	t_sphere	res;
 
 	res.center = center;
 	res.radius = radius;
 	res.color = color;
-	return res;
+	res.specular = specular;
+	return (res);
 }
 
 t_light new_light(t_vector direct, float intensity, char type)
@@ -77,11 +93,12 @@ void	prepare_objects(t_app *app)
 	while (++i < app->scene.objects_amount)
 	{
 		app->scene.spheres[i] = new_sphere(set_vertex(i - 2, 0, i * 2),
-				i + 2, set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120));
+				i + 2, set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120), 50 + i * 100);
 	}
 	app->scene.spheres[2].center = set_vertex(0, -5001, 0);
 	app->scene.spheres[2].radius = 5000;
 	app->scene.spheres[2].color = set_color(255, 255, 0);
+	app->scene.spheres[2].specular = 500;
 
 }
 
@@ -92,7 +109,7 @@ void	prepare_ligth(t_app *app)
 	i = -1;
 	while (++i < app->scene.lights_amount)
 	{
-		app->scene.lights[i] = new_light(set_vertex(-3, 2, -4), 2.0f, 'p');
+		app->scene.lights[i] = new_light(set_vertex(-3 + i, 2 + i, -4 + i), 2.0f, 'p');
 	}
 }
 
@@ -118,8 +135,8 @@ void	start_the_game(t_app *app)
 	app->camera.camera = set_vertex(0.0f, 0.0f, -5.50f);
 	while (1)
 	{
-	    float x = 0;
-	    float y = 0;
+	    int x = 0;
+	    int y = 0;
         //ft_memset(app->sdl->surface->pixels, 0, SCREEN_WIDTH * SCREEN_HEIGHT * 4);
 		if (!event_handling(app))
 			break;
@@ -130,7 +147,7 @@ void	start_the_game(t_app *app)
 		    while (x < SCREEN_WIDTH)
             {
 				app->scene.cur_object = 0;
-		        app->camera.direct = to_vieport(x , y);
+		        app->camera.direct = to_vieport2(x , y);
                 color = raytrace(app->camera.camera,
                 		app->camera.direct, 1, 999999, app);
                 set_pixel(app->sdl->surface, x, y, color);
@@ -138,18 +155,45 @@ void	start_the_game(t_app *app)
             }
 		    y++;
         }
-
-//		for (int x = 0; x < SCREEN_WIDTH; x++)
-//		{
-//			for (int y = 0; y < SCREEN_HEIGHT; y++)
-//			{
-//				canvas = field_to_view(x, y);
-//			}
-//		}
 		SDL_UpdateWindowSurface(app->sdl->window);
-//set_pixel(app->sdl->surface, 0, 0, &scene[0].color);
-//SDL_UpdateWindowSurface((app->sdl->window));
 	}
 	SDL_Quit();
 	SDL_DestroyWindow(app->sdl->window);
+}
+
+void	start_the_game2(t_app *app)
+{
+	prepare_ligth(app);
+	prepare_objects(app);
+	app->camera.camera = set_vertex(0.0f, 0.0f, -5.50f);
+	redraw(app);
+	while (1)
+	{
+		if (!event_handling2(app))
+			break;
+	}
+	SDL_Quit();
+	SDL_DestroyWindow(app->sdl->window);
+}
+
+void	redraw(t_app *app)
+{
+	t_color		color;
+
+		int x = 0;
+		int y = 0;
+		while (y < SCREEN_HEIGHT)
+		{
+			x = 0;
+			while (x < SCREEN_WIDTH)
+			{
+				app->scene.cur_object = 0;
+				app->camera.direct = to_vieport2(x, y);
+				color = raytrace(app->camera.camera, app->camera.direct, 1, 999999, app);
+				set_pixel(app->sdl->surface, x, y, color);
+				x++;
+			}
+			y++;
+		}
+		SDL_UpdateWindowSurface(app->sdl->window);
 }
