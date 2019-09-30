@@ -4,14 +4,34 @@
 int		check_camera(const uint8_t *key, t_app *app)
 {
 	int a = 0;
+	float angle;
+
+	if (key[SDL_SCANCODE_Q])
+	{
+		app->camera.rotate_angle_y -= app->camera.rotate_speed * RAD;
+		a = 1;
+	}
+	if (key[SDL_SCANCODE_E])
+	{
+		app->camera.rotate_angle_y += app->camera.rotate_speed * RAD;
+		a = 1;
+	}
 	if (key[SDL_SCANCODE_A])
 	{
-		app->camera.camera.x -= 0.5f;
+		angle = app->camera.rotate_angle_y - 90 * RAD;
+		app->camera.camera.x = app->camera.camera.x
+				+ app->camera.camera_speed * sinf(angle);
+		app->camera.camera.z = app->camera.camera.z
+							   + app->camera.camera_speed * cosf(angle);
 		a = 1;
 	}
 	if (key[SDL_SCANCODE_D])
 	{
-		app->camera.camera.x += 0.5f;
+		angle = app->camera.rotate_angle_y + 90 * RAD;
+		app->camera.camera.x = app->camera.camera.x
+							   + app->camera.camera_speed * sinf(angle);
+		app->camera.camera.z = app->camera.camera.z
+							   + app->camera.camera_speed * cosf(angle);
 		a = 1;
 	}
 	if (key[SDL_SCANCODE_UP])
@@ -26,12 +46,22 @@ int		check_camera(const uint8_t *key, t_app *app)
 	}
 	if (key[SDL_SCANCODE_W])
 	{
-		app->camera.camera.z += 0.5f;
+		app->camera.camera.x = app->camera.camera.x
+							   + app->camera.camera_speed
+							   * sinf(app->camera.rotate_angle_y);
+		app->camera.camera.z = app->camera.camera.z
+							   + app->camera.camera_speed
+							   * cosf(app->camera.rotate_angle_y);
+
 		a = 1;
 	}
 	if (key[SDL_SCANCODE_S])
 	{
-		app->camera.camera.z -= 0.5f;
+		angle = app->camera.rotate_angle_y + 180 * RAD;
+		app->camera.camera.x = app->camera.camera.x
+							   + app->camera.camera_speed * sinf(angle);
+		app->camera.camera.z = app->camera.camera.z
+							   + app->camera.camera_speed * cosf(angle);
 		a = 1;
 	}
 	return (a);

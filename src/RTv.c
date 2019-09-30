@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/07 17:22:21 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/09/26 17:42:00 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/09/30 14:26:37 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,8 @@ float 	light_calculate(t_vector plane, t_vector normal, t_app *app, int specular
 	t_vector L;
 	t_vector R;
 	t_vector V;
+	t_intersect_object object;
+	float 				max;
 	int i;
 	float dot;
 	float rot;
@@ -157,9 +159,18 @@ float 	light_calculate(t_vector plane, t_vector normal, t_app *app, int specular
 		else
 		{
 			if (app->scene.lights[i].type == 'p')
+			{
 				L = vector_sub(app->scene.lights[i].direct, plane);
+				max = 1;
+			}
 			else
+			{
 				L = app->scene.lights[i].direct;
+				max = 999999;
+			}
+			object = find_intersected_object(app, plane, L, 0.001f, max);
+			if (object.flag != 0)
+				continue;
 			dot = vector_dot(normal, L);
 			if (dot > 0)
 				res += app->scene.lights[i].intensity * dot /
@@ -172,7 +183,7 @@ float 	light_calculate(t_vector plane, t_vector normal, t_app *app, int specular
 				R = vector_sub(R, L);
 				rot = vector_dot(R, V);
 				if (rot > 0)
-					res += app->scene.lights[i].intensity * pow(rot / (vector_length(R) * vector_length(V)), specular);
+					res += app->scene.lights[i].intensity * powf(rot / (vector_length(R) * vector_length(V)), specular);
 			}
 		}
 	}
@@ -189,43 +200,53 @@ t_color pallete(t_color color, float num)
 	return (res);
 }
 
-t_color raytrace(t_vector camera, t_vector direct,
-				 int length_min, int length_max, t_app *app)
+t_intersect_object
+find_intersected_object(t_app *app, t_vector camera, t_vector direct, float length_min, float length_max)
 {
-	float				closest_intersect;
-	t_sphere			closest_object;
-	t_sphere_intersect	intersect;
-	t_vector			plane;
-	t_vector			normal;
-	int					i;
+	int		i;
+	t_intersect_object object;
+	t_sphere_intersect intersect;
 
 	i = -1;
-	closest_object.mode = 0;
-	closest_intersect = 999999;
-
+	object.flag = 0;
+	object.distance = 999999;
 	while (++i < app->scene.objects_amount)
 	{
-		intersect = intersect_ray_sphere(camera, direct, app->scene.spheres[i]);
-
+		intersect = intersect_ray_sphere(camera,
+				direct, app->scene.spheres[i]);
 		if (between(length_min, length_max, intersect.first) &&
-			intersect.first < closest_intersect)
+			intersect.first < object.distance)
 		{
-			closest_intersect = intersect.first;
-			closest_object = app->scene.spheres[i];
-			closest_object.mode = 1;
+			object.distance = intersect.first;
+			object.object = app->scene.spheres[i];
+			object.flag = 1;
 		}
 		if (between(length_min, length_max, intersect.second) &&
-			intersect.second < closest_intersect)
+			intersect.second < object.distance)
 		{
-			closest_intersect = intersect.second;
-			closest_object = app->scene.spheres[i];
-			closest_object.mode = 1;
+			object.distance = intersect.second;
+			object.object = app->scene.spheres[i];
+			object.flag = 1;
 		}
 	}
-	if (!closest_object.mode)
+	return (object);
+}
+
+t_color raytrace(t_vector camera, t_vector direct,
+				 float length_min, float length_max, t_app *app)
+{
+	t_vector			plane;
+	t_vector			normal;
+	t_intersect_object	object;
+
+	object = find_intersected_object(app, app->camera.camera,
+			app->camera.direct, length_min, length_max);
+	if (!object.flag)
 		return (set_color(0, 0, 0));
-	plane = vector_add(camera, vector_dot_scal(direct, closest_intersect));
-	normal = vector_sub(plane, closest_object.center);
+	plane = vector_add(camera, vector_dot_scal(direct, object.distance));
+	normal = vector_sub(plane, object.object.center);
 	normal = vector_div_scal(normal, vector_length(normal));
-	return pallete(closest_object.color, light_calculate(plane, normal, app, closest_object.specular));
+	return pallete(object.object.color,
+			light_calculate(plane, normal, app,
+			object.object.specular));
 }

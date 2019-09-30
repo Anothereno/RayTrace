@@ -1,10 +1,5 @@
 #include "RTv1.h"
 
-/*void	clear_screen(t_app *app)
-{
-	image_clear(app->sdl->surface->pixels, 0, SCREEN_W * SCREEN_H * 4);
-}*/
-
 int     hit_sphere(t_vector center, float radius, t_ray ray)
 {
     t_vector	oc;
@@ -92,8 +87,8 @@ void	prepare_objects(t_app *app)
 	i = -1;
 	while (++i < app->scene.objects_amount)
 	{
-		app->scene.spheres[i] = new_sphere(set_vertex(i - 2, 0, i * 2),
-				i + 2, set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120), 50 + i * 100);
+		app->scene.spheres[i] = new_sphere(set_vertex(i - 2, 0, i * 6),
+				i + 2, set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120), 10 + i * 500);
 	}
 	app->scene.spheres[2].center = set_vertex(0, -5001, 0);
 	app->scene.spheres[2].radius = 5000;
@@ -109,16 +104,21 @@ void	prepare_ligth(t_app *app)
 	i = -1;
 	while (++i < app->scene.lights_amount)
 	{
-		app->scene.lights[i] = new_light(set_vertex(-3 + i, 2 + i, -4 + i), 2.0f, 'p');
+		app->scene.lights[i] = new_light(set_vertex(-3 + i, 6 + i, -4 + i), 2.0f, 'p');
 	}
 }
 
-//t_vector rotation_y(t_app *app, t_vector viewport)
-//{
-//	t_vector res;
-//
-//	res.x = viewport.x * cosf(app.)
-//}
+t_vector rotation_y(t_app *app, t_vector viewport)
+{
+	t_vector res;
+
+	res.x = viewport.x * cosf(app->camera.rotate_angle_y)
+			+ viewport.z * sinf(app->camera.rotate_angle_y);
+	res.y = viewport.y;
+	res.z = viewport.x * sinf(app->camera.rotate_angle_y) * -1.0f
+			+ viewport.z * cosf(app->camera.rotate_angle_y);
+	return (res);
+}
 
 void	start_the_game(t_app *app)
 {
@@ -188,8 +188,8 @@ void	redraw(t_app *app)
 			while (x < SCREEN_WIDTH)
 			{
 				app->scene.cur_object = 0;
-				app->camera.direct = to_vieport2(x, y);
-				color = raytrace(app->camera.camera, app->camera.direct, 1, 999999, app);
+				app->camera.direct = rotation_y(app, to_vieport2(x, y));
+				color = raytrace(app->camera.camera, app->camera.direct, 1.0f, 999999.0f, app);
 				set_pixel(app->sdl->surface, x, y, color);
 				x++;
 			}

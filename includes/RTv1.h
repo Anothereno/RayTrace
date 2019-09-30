@@ -1,20 +1,8 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   fractol.h                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/04/30 19:03:11 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/09/26 19:14:12 by hdwarven         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef WOLF3D_H
 # define WOLF3D_H
 
 # include <math.h>
-# include "libft.h"
+# include "../libft/libft.h"
 # include <fcntl.h>
 # include <stdlib.h>
 # include <stdio.h>
@@ -23,7 +11,7 @@
 # include <SDL.h>
 //# include <SDL_ttf.h>
 # define BLOCK_SIZE	64
-# define RAD 0.0174533
+# define RAD 0.0174533f
 # define SCREEN_WIDTH 800
 # define SCREEN_HEIGHT 600
 # define CENTER_WIDTH (SCREEN_WIDTH / 2)
@@ -62,6 +50,9 @@ typedef struct s_camera
 {
 	t_vector		camera;
 	t_vector		direct;
+	float 			rotate_angle_y;
+	float			camera_speed;
+	float 			rotate_speed;
 }				t_camera;
 
 typedef struct s_color
@@ -85,7 +76,15 @@ typedef struct s_sphere
     float			radius;
     t_color			color;
     int				specular;
+    float 			reflective;
 }				t_sphere;
+
+typedef struct	s_intersect_object
+{
+	int 		flag;
+	t_sphere	object;
+	float 		distance;
+}				t_intersect_object;
 
 typedef struct s_rotate
 {
@@ -119,6 +118,7 @@ typedef struct s_sphere_intersect
 	int				intersect_amount;
 	float			first;
 	float			second;
+	t_sphere		intersected_object;
 }				t_sphere_intersect;
 
 t_sphere_intersect intersect_ray_sphere(t_vector camera, t_vector direct,
@@ -131,7 +131,7 @@ void				init_app(t_app *app);
 void				start_the_game(t_app *app);
 t_vector 			field_to_view(int x, int y);
 t_color				raytrace(t_vector camera, t_vector direct,
-						int length_min, int length_max, t_app *app);
+								float length_min, float length_max, t_app *app);
 t_vector 			set_vertex(float x, float y, float z);
 float				vector_dot(t_vector first, t_vector second);
 t_vector			vector_sub(t_vector first, t_vector second);
@@ -157,4 +157,6 @@ void				redraw(t_app *app);
 t_sphere 			new_sphere(t_vector center, float radius, t_color color, int specular);
 int					check_lights(const uint8_t *key, t_app *app);
 int					check_camera(const uint8_t *key, t_app *app);
+t_intersect_object
+find_intersected_object(t_app *app, t_vector camera, t_vector direct, float length_min, float length_max);
 #endif

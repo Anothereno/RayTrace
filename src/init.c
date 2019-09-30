@@ -21,4 +21,7 @@ void	init_app(t_app *app)
     app->scene.lights = (t_light*)malloc(sizeof(t_light)
 										   * app->scene.lights_amount);
     app->scene.cur_light_control = 0;
+    app->camera.rotate_angle_y = 0;
+    app->camera.camera_speed = 1.0f;
+    app->camera.rotate_speed = 4.0f;
 }

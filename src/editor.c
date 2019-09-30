@@ -10,6 +10,10 @@ int		event_handling(t_app *app)
 		return(0);
 	if (key[SDL_SCANCODE_ESCAPE])
 		return(0);
+	if (key[SDL_SCANCODE_Q])
+		app->camera.rotate_angle_y -= 0.5f;
+	if (key[SDL_SCANCODE_E])
+		app->camera.rotate_angle_y += 0.5f;
 	if (key[SDL_SCANCODE_A])
 		app->camera.camera.x -= 0.5f;
 	if (key[SDL_SCANCODE_D])
@@ -46,7 +50,7 @@ int		event_handling2(t_app *app)
 	const uint8_t *key;
 	key = app->sdl->keys;
 	int a = 0;
-	SDL_PollEvent(&app->sdl->event);
+	SDL_WaitEvent(&app->sdl->event);
 	if (app->sdl->event.type == SDL_QUIT)
 		return(0);
 	if (key[SDL_SCANCODE_ESCAPE])
@@ -55,5 +59,6 @@ int		event_handling2(t_app *app)
 	a += check_lights(key, app);
 	if (a)
 		redraw(app);
+//	SDL_WaitEvent(&app->sdl->event);
 	return (1);
 }
