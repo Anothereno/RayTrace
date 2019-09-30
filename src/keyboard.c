@@ -70,6 +70,7 @@ int		check_camera(const uint8_t *key, t_app *app)
 int		check_lights(const uint8_t *key, t_app *app)
 {
 	int		a;
+	float	angle;
 
 	a = 0;
 	if (key[SDL_SCANCODE_1] && app->scene.cur_light_control >= 1)
@@ -87,22 +88,46 @@ int		check_lights(const uint8_t *key, t_app *app)
 	}
 	if (key[SDL_SCANCODE_KP_4])
 	{
-		app->scene.lights[app->scene.cur_light_control].direct.x -= 0.5f;
+		angle = app->camera.rotate_angle_y - 90 * RAD;
+		app->scene.lights[app->scene.cur_light_control].direct.x =
+				app->scene.lights[app->scene.cur_light_control].direct.x
+				+ app->scene.light_speed * sinf(angle);
+		app->scene.lights[app->scene.cur_light_control].direct.z =
+				app->scene.lights[app->scene.cur_light_control].direct.z
+				+ app->scene.light_speed * cosf(angle);
+//		app->scene.lights[app->scene.cur_light_control].direct.x -= app->scene.light_speed;
 		a = 1;
 	}
 	if (key[SDL_SCANCODE_KP_6])
 	{
-		app->scene.lights[app->scene.cur_light_control].direct.x += 0.5f;
+		angle = app->camera.rotate_angle_y + 90 * RAD;
+		app->scene.lights[app->scene.cur_light_control].direct.x =
+				app->scene.lights[app->scene.cur_light_control].direct.x
+				+ app->scene.light_speed * sinf(angle);
+		app->scene.lights[app->scene.cur_light_control].direct.z =
+				app->scene.lights[app->scene.cur_light_control].direct.z
+				+ app->scene.light_speed * cosf(angle);
 		a = 1;
 	}
-	if (key[SDL_SCANCODE_KP_2])
+	if (key[SDL_SCANCODE_KP_5])
 	{
-		app->scene.lights[app->scene.cur_light_control].direct.z -= 0.5f;
+		angle = app->camera.rotate_angle_y + 180 * RAD;
+		app->scene.lights[app->scene.cur_light_control].direct.x =
+				app->scene.lights[app->scene.cur_light_control].direct.x
+				+ app->scene.light_speed * sinf(angle);
+		app->scene.lights[app->scene.cur_light_control].direct.z =
+				app->scene.lights[app->scene.cur_light_control].direct.z
+				+ app->scene.light_speed * cosf(angle);
 		a = 1;
 	}
 	if (key[SDL_SCANCODE_KP_8])
 	{
-		app->scene.lights[app->scene.cur_light_control].direct.z += 0.5f;
+		app->scene.lights[app->scene.cur_light_control].direct.x =
+				app->scene.lights[app->scene.cur_light_control].direct.x
+				+ app->scene.light_speed * sinf(app->camera.rotate_angle_y);
+		app->scene.lights[app->scene.cur_light_control].direct.z =
+				app->scene.lights[app->scene.cur_light_control].direct.z
+				+ app->scene.light_speed * cosf(app->camera.rotate_angle_y);
 		a = 1;
 	}
 	if (key[SDL_SCANCODE_KP_PLUS])

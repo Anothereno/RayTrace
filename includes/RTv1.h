@@ -16,7 +16,7 @@
 # define SCREEN_HEIGHT 600
 # define CENTER_WIDTH (SCREEN_WIDTH / 2)
 # define CENTER_HEIGHT (SCREEN_HEIGHT / 2)
-# define AMOUNT_OBJECTS 3
+# define AMOUNT_OBJECTS 2
 # define AMOUNT_LIGHTS 2
 
 typedef struct s_vector
@@ -26,6 +26,12 @@ typedef struct s_vector
     float			z;
     float			distance;
 }				t_vector;
+
+typedef	struct		s_plane
+{
+	t_vector		center;
+	t_vector		normal;
+}					t_plane;
 
 typedef struct      s_ray
 {
@@ -101,6 +107,7 @@ typedef struct s_scene
 	t_light			*lights;
 	int				lights_amount;
 	int				cur_light_control;
+	float			light_speed;
 	t_rotate		rotate;
 }               t_scene;
 

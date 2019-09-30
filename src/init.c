@@ -24,4 +24,5 @@ void	init_app(t_app *app)
     app->camera.rotate_angle_y = 0;
     app->camera.camera_speed = 1.0f;
     app->camera.rotate_speed = 4.0f;
+    app->scene.light_speed = 3.0f;
 }
