@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/07 17:22:21 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/01 15:52:59 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/01 17:57:59 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,52 +239,65 @@ t_object	find_intersected_spheres(t_app *app,
 	return (object);
 }
 
+
+float	intersect_ray_plane(t_vector camera, t_vector direct,
+										   t_plane plane)
+{
+	float		distance;
+	float		plane_dot_ray;
+	t_vector	plane_sub_ray;
+	float		plane_dot_psr;
+
+	plane_dot_ray = vector_dot(plane.normal, direct);
+	plane_sub_ray = vector_sub(plane.center, camera);
+	plane_dot_psr = vector_dot(plane.normal, plane_sub_ray);
+	distance = plane_dot_psr / plane_dot_ray;
+	return (distance);
+}
+
+
 t_object	find_intersected_planes(t_app *app,
 									 t_vector camera, t_vector direct,
-									 float length_min, float length_max)
+									 float length_min, float length_max,
+									 t_object prev_object)
 {
-	int		i;
-	t_object object;
-	t_sphere_intersect intersect_sphere;
+	int					i;
+	t_object			object;
+	float 				distance;
 
 	i = -1;
 	object.flag = 0;
 	object.distance = 999999;
-	while (++i < app->scene.spheres_amount)
+	while (++i < app->scene.planes_amount)
 	{
-		intersect_sphere = intersect_ray_sphere(camera,
-				direct, app->scene.spheres[i]);
-		if (between(length_min, length_max, intersect_sphere.first) &&
-			intersect_sphere.first < object.distance)
+		distance = intersect_ray_plane(camera,
+				direct, app->scene.planes[i]);
+		if (between(length_min, length_max, distance) &&
+			distance < object.distance)
 		{
-			object.distance = intersect_sphere.first;
-			object.center = app->scene.spheres[i].center;
-			object.color = app->scene.spheres[i].color;
-			object.specular = app->scene.spheres[i].specular;
-			object.flag = 1;
-		}
-		if (between(length_min, length_max, intersect_sphere.second) &&
-			intersect_sphere.second < object.distance)
-		{
-			object.distance = intersect_sphere.second;
-			object.center = app->scene.spheres[i].center;
-			object.color = app->scene.spheres[i].color;
-			object.specular = app->scene.spheres[i].specular;
+			object.distance = distance;
+			object.center = app->scene.planes[i].center;
+			object.color = app->scene.planes[i].color;
+			object.specular = app->scene.planes[i].specular;
 			object.flag = 1;
 		}
 	}
-	return (object);
+	if (object.distance < prev_object.distance)
+		return (object);
+	return (prev_object);
 }
 
 t_color raytrace(t_vector camera, t_vector direct,
 				 float length_min, float length_max, t_app *app)
 {
-	t_vector			plane;
-	t_vector			normal;
+	t_vector	plane;
+	t_vector	normal;
 	t_object	object;
 
 	object = find_intersected_spheres(app, app->camera.camera,
-									  app->camera.direct, length_min, length_max);
+			app->camera.direct, length_min, length_max);
+	object = find_intersected_planes(app, app->camera.camera,
+			app->camera.direct, length_min, length_max, object);
 	if (!object.flag)
 		return (set_color(0, 0, 0));
 	plane = vector_add(camera, vector_dot_scalar(direct, object.distance));

@@ -1,5 +1,6 @@
 # Prerequisites
 *.direct
+*.idea*
 
 # Object files
 *.camera

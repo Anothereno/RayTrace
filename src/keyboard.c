@@ -130,6 +130,16 @@ int		check_lights(const uint8_t *key, t_app *app)
 				+ app->scene.light_speed * cosf(app->camera.rotate_angle_y);
 		a = 1;
 	}
+	if (key[SDL_SCANCODE_KP_9])
+	{
+		app->scene.lights[app->scene.cur_light_control].direct.y += 2.1f;
+		a = 1;
+	}
+	if (key[SDL_SCANCODE_KP_3])
+	{
+		app->scene.lights[app->scene.cur_light_control].direct.y -= 2.1f;
+		a = 1;
+	}
 	if (key[SDL_SCANCODE_KP_PLUS])
 	{
 		app->scene.lights[app->scene.cur_light_control].intensity += 0.1f;

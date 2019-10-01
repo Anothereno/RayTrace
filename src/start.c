@@ -61,6 +61,17 @@ t_sphere new_sphere(t_vector center, float radius, t_color color, int specular)
 	return (res);
 }
 
+t_plane new_plane(t_vector center, t_vector normal, t_color color, int specular)
+{
+	t_plane	res;
+
+	res.center = center;
+	res.normal = normal;
+	res.color = color;
+	res.specular = specular;
+	return (res);
+}
+
 t_light new_light(t_vector direct, float intensity, char type)
 {
 	t_light res;
@@ -87,9 +98,16 @@ void	prepare_objects(t_app *app)
 	i = -1;
 	while (++i < app->scene.spheres_amount)
 	{
-		app->scene.spheres[i] = new_sphere(set_vertex(i - 2, 0, i * 6),
-				i + 2, set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120), 10 + i * 100);
+		app->scene.spheres[i] = new_sphere(set_vertex(i - 2, 0, i * 2),i + 2,
+				set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120),10 + i * 30);
 	}
+	i = -1;
+	while (++i < app->scene.planes_amount)
+	{
+		app->scene.planes[i] = new_plane(set_vertex(0, -3, 8),
+				set_vertex(0, i + i * 90, 3), set_color(30, 40, 180), 140);
+	}
+	app->scene.planes[0].color = set_color(0, 200, 0);
 //	app->scene.spheres[2].center = set_vertex(0, -5001, 0);
 //	app->scene.spheres[2].radius = 5000;
 //	app->scene.spheres[2].color = set_color(255, 255, 0);
@@ -97,16 +115,23 @@ void	prepare_objects(t_app *app)
 
 }
 
-void	prepare_ligth(t_app *app)
+void	prepare_light(t_app *app)
 {
 	int i;
 
 	i = -1;
 	while (++i < app->scene.lights_amount)
 	{
-		app->scene.lights[i] = new_light(set_vertex(-3 + i, 6 + i, -4 + i), 2.0f, 'd');
+		app->scene.lights[i] = new_light(set_vertex(-20 + i, 6 + i, -20 + i), 2.0f, 'p');
 	}
-	app->scene.lights[0].type = 'p';
+	app->scene.lights[0].type = 'd';
+	app->scene.lights[0].intensity = 0.9f;
+	app->scene.lights[0].direct = set_vertex(-15, 40, -14);
+	app->scene.lights[1].type = 'a';
+	app->scene.lights[1].intensity = 0.4f;
+	app->scene.lights[2].type = 'd';
+	app->scene.lights[2].intensity = 0.9f;
+	app->scene.lights[2].direct = set_vertex(20, 40, -10);
 }
 
 t_vector rotation_y(t_app *app, t_vector viewport)
@@ -123,7 +148,7 @@ t_vector rotation_y(t_app *app, t_vector viewport)
 
 void	start_the_game2(t_app *app)
 {
-	prepare_ligth(app);
+	prepare_light(app);
 	prepare_objects(app);
 	app->camera.camera = set_vertex(0.0f, 0.0f, -5.50f);
 	redraw(app);

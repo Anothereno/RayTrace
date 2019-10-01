@@ -20,14 +20,14 @@
 # define AMOUNT_CONES 2
 # define AMOUNT_PLANES 2
 # define AMOUNT_CYLINDERS 2
-# define AMOUNT_LIGHTS 2
+# define AMOUNT_LIGHTS 3
 
 typedef struct s_vector
 {
-    float			x;
-    float			y;
-    float			z;
-    float			distance;
+    float		x;
+    float		y;
+    float		z;
+    float		distance;
 }				t_vector;
 
 typedef struct      s_ray
@@ -76,6 +76,7 @@ typedef	struct		s_plane
 {
 	t_vector		center;
 	t_vector		normal;
+	int 			specular;
 	t_color			color;
 }					t_plane;
 

@@ -58,7 +58,12 @@ int		event_handling2(t_app *app)
 	a = check_camera(key, app);
 	a += check_lights(key, app);
 	if (a)
+	{
 		redraw(app);
+//		printf("light.x - %f, light.y - %f, light.z - %f\n", app->scene.lights[app->scene.cur_light_control].direct.x,
+//			   app->scene.lights[app->scene.cur_light_control].direct.y,
+//		app->scene.lights[app->scene.cur_light_control].direct.z);
+	}
 //	SDL_WaitEvent(&app->sdl->event);
 	return (1);
 }
