@@ -14,9 +14,18 @@ void	init_app(t_app *app)
     app->sdl->surface = SDL_GetWindowSurface(app->sdl->window);
     app->sdl->keys = SDL_GetKeyboardState(NULL);
 
-    app->scene.objects_amount = AMOUNT_OBJECTS;
+    app->scene.spheres_amount = AMOUNT_SPHERES;
     app->scene.spheres = (t_sphere*)malloc(sizeof(t_sphere)
-										   * app->scene.objects_amount);
+										   * app->scene.spheres_amount);
+    app->scene.cones_amount = AMOUNT_CONES;
+    app->scene.cones = (t_cone*)malloc(sizeof(t_cone)
+										   * app->scene.cones_amount);
+    app->scene.planes_amount = AMOUNT_PLANES;
+    app->scene.planes = (t_plane*)malloc(sizeof(t_plane)
+										   * app->scene.planes_amount);
+    app->scene.cylinders_amount = AMOUNT_CYLINDERS;
+    app->scene.cylinders = (t_cylinder*)malloc(sizeof(t_cylinder)
+										   * app->scene.cylinders_amount);
     app->scene.lights_amount = AMOUNT_LIGHTS;
     app->scene.lights = (t_light*)malloc(sizeof(t_light)
 										   * app->scene.lights_amount);

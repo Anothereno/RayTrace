@@ -85,7 +85,7 @@ void	prepare_objects(t_app *app)
 	int i;
 
 	i = -1;
-	while (++i < app->scene.objects_amount)
+	while (++i < app->scene.spheres_amount)
 	{
 		app->scene.spheres[i] = new_sphere(set_vertex(i - 2, 0, i * 6),
 				i + 2, set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120), 10 + i * 100);
@@ -119,44 +119,6 @@ t_vector rotation_y(t_app *app, t_vector viewport)
 	res.z = viewport.x * sinf(app->camera.rotate_angle_y) * -1.0f
 			+ viewport.z * cosf(app->camera.rotate_angle_y);
 	return (res);
-}
-
-void	start_the_game(t_app *app)
-{
-	t_vector	camera;
-	t_vector	direct;
-	t_color		color;
-
-	prepare_ligth(app);
-	prepare_objects(app);
-
-	app->camera.camera = set_vertex(0.0f, 0.0f, -5.50f);
-	while (1)
-	{
-	    int x = 0;
-	    int y = 0;
-        //ft_memset(app->sdl->surface->pixels, 0, SCREEN_WIDTH * SCREEN_HEIGHT * 4);
-		if (!event_handling(app))
-			break;
-
-		while (y < SCREEN_HEIGHT)
-        {
-		    x = 0;
-		    while (x < SCREEN_WIDTH)
-            {
-				app->scene.cur_object = 0;
-		        app->camera.direct = to_vieport2(x , y);
-                color = raytrace(app->camera.camera,
-                		app->camera.direct, 1, 999999, app);
-                set_pixel(app->sdl->surface, x, y, color);
-		        x++;
-            }
-		    y++;
-        }
-		SDL_UpdateWindowSurface(app->sdl->window);
-	}
-	SDL_Quit();
-	SDL_DestroyWindow(app->sdl->window);
 }
 
 void	start_the_game2(t_app *app)

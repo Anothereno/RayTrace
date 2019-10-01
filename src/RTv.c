@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/07 17:22:21 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/09/30 14:26:37 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/01 15:52:59 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,12 +90,14 @@ float vector_dot(t_vector first, t_vector second)
 	return (res);
 }
 
-float vector_length(t_vector vector)
+float				vector_length(t_vector vector)
 {
 	return (sqrtf(vector_dot(vector, vector)));
 }
 
-t_sphere_intersect intersect_ray_sphere(t_vector camera, t_vector direct,
+
+
+t_sphere_intersect	intersect_ray_sphere(t_vector camera, t_vector direct,
 										t_sphere sphere)
 {
 	t_vector oc;
@@ -121,7 +123,7 @@ t_sphere_intersect intersect_ray_sphere(t_vector camera, t_vector direct,
 							  ((-b) - sqrtf(discr)) / (2 * a)));
 }
 
-t_vector	vector_dot_scal(t_vector vector, float num)
+t_vector			vector_dot_scalar(t_vector vector, float num)
 {
 	t_vector res;
 
@@ -144,7 +146,7 @@ float 	light_calculate(t_vector plane, t_vector normal, t_app *app, int specular
 	t_vector L;
 	t_vector R;
 	t_vector V;
-	t_intersect_object object;
+	t_object object;
 	float 				max;
 	int i;
 	float dot;
@@ -168,7 +170,7 @@ float 	light_calculate(t_vector plane, t_vector normal, t_app *app, int specular
 				L = app->scene.lights[i].direct;
 				max = 999999;
 			}
-			object = find_intersected_object(app, plane, L, 0.001f, max);
+			object = find_intersected_spheres(app, plane, L, 0.001f, max);
 			if (object.flag != 0)
 				continue;
 			dot = vector_dot(normal, L);
@@ -200,32 +202,74 @@ t_color pallete(t_color color, float num)
 	return (res);
 }
 
-t_intersect_object
-find_intersected_object(t_app *app, t_vector camera, t_vector direct, float length_min, float length_max)
+t_object	find_intersected_spheres(t_app *app,
+									 t_vector camera, t_vector direct,
+									 float length_min, float length_max)
 {
 	int		i;
-	t_intersect_object object;
-	t_sphere_intersect intersect;
+	t_object object;
+	t_sphere_intersect intersect_sphere;
 
 	i = -1;
 	object.flag = 0;
 	object.distance = 999999;
-	while (++i < app->scene.objects_amount)
+	while (++i < app->scene.spheres_amount)
 	{
-		intersect = intersect_ray_sphere(camera,
+		intersect_sphere = intersect_ray_sphere(camera,
 				direct, app->scene.spheres[i]);
-		if (between(length_min, length_max, intersect.first) &&
-			intersect.first < object.distance)
+		if (between(length_min, length_max, intersect_sphere.first) &&
+			intersect_sphere.first < object.distance)
 		{
-			object.distance = intersect.first;
-			object.object = app->scene.spheres[i];
+			object.distance = intersect_sphere.first;
+			object.center = app->scene.spheres[i].center;
+			object.color = app->scene.spheres[i].color;
+			object.specular = app->scene.spheres[i].specular;
 			object.flag = 1;
 		}
-		if (between(length_min, length_max, intersect.second) &&
-			intersect.second < object.distance)
+		if (between(length_min, length_max, intersect_sphere.second) &&
+			intersect_sphere.second < object.distance)
 		{
-			object.distance = intersect.second;
-			object.object = app->scene.spheres[i];
+			object.distance = intersect_sphere.second;
+			object.center = app->scene.spheres[i].center;
+			object.color = app->scene.spheres[i].color;
+			object.specular = app->scene.spheres[i].specular;
+			object.flag = 1;
+		}
+	}
+	return (object);
+}
+
+t_object	find_intersected_planes(t_app *app,
+									 t_vector camera, t_vector direct,
+									 float length_min, float length_max)
+{
+	int		i;
+	t_object object;
+	t_sphere_intersect intersect_sphere;
+
+	i = -1;
+	object.flag = 0;
+	object.distance = 999999;
+	while (++i < app->scene.spheres_amount)
+	{
+		intersect_sphere = intersect_ray_sphere(camera,
+				direct, app->scene.spheres[i]);
+		if (between(length_min, length_max, intersect_sphere.first) &&
+			intersect_sphere.first < object.distance)
+		{
+			object.distance = intersect_sphere.first;
+			object.center = app->scene.spheres[i].center;
+			object.color = app->scene.spheres[i].color;
+			object.specular = app->scene.spheres[i].specular;
+			object.flag = 1;
+		}
+		if (between(length_min, length_max, intersect_sphere.second) &&
+			intersect_sphere.second < object.distance)
+		{
+			object.distance = intersect_sphere.second;
+			object.center = app->scene.spheres[i].center;
+			object.color = app->scene.spheres[i].color;
+			object.specular = app->scene.spheres[i].specular;
 			object.flag = 1;
 		}
 	}
@@ -237,16 +281,16 @@ t_color raytrace(t_vector camera, t_vector direct,
 {
 	t_vector			plane;
 	t_vector			normal;
-	t_intersect_object	object;
+	t_object	object;
 
-	object = find_intersected_object(app, app->camera.camera,
-			app->camera.direct, length_min, length_max);
+	object = find_intersected_spheres(app, app->camera.camera,
+									  app->camera.direct, length_min, length_max);
 	if (!object.flag)
 		return (set_color(0, 0, 0));
-	plane = vector_add(camera, vector_dot_scal(direct, object.distance));
-	normal = vector_sub(plane, object.object.center);
+	plane = vector_add(camera, vector_dot_scalar(direct, object.distance));
+	normal = vector_sub(plane, object.center);
 	normal = vector_div_scal(normal, vector_length(normal));
-	return pallete(object.object.color,
+	return pallete(object.color,
 			light_calculate(plane, normal, app,
-			object.object.specular));
+			object.specular));
 }
