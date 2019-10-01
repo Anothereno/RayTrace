@@ -84,10 +84,7 @@ t_color set_color(int red, int green, int blue)
 
 float vector_dot(t_vector first, t_vector second)
 {
-	float res;
-
-	res = first.x * second.x + first.y * second.y + first.z * second.z;
-	return (res);
+	return (first.x * second.x + first.y * second.y + first.z * second.z);
 }
 
 float				vector_length(t_vector vector)
@@ -121,6 +118,33 @@ t_sphere_intersect	intersect_ray_sphere(t_vector camera, t_vector direct,
 		return (set_intersect(2,
 							  ((-b) + sqrtf(discr)) / (2 * a),
 							  ((-b) - sqrtf(discr)) / (2 * a)));
+}
+
+t_sphere_intersect	intersect_ray_cylinder(t_vector camera, t_vector direct,
+										   t_cylinder cylinder)
+{
+	t_vector oc;
+	float a;
+	float b;
+	float c;
+	//float discr;
+
+	//oc = vector_sub(camera, sphere.center);
+
+	a = (direct.x * direct.x) + (direct.z * direct.z);
+	b = 2.0f * (direct.x * (camera.x - cylinder.center.x) + direct.z * (camera.z - cylinder.center.z));
+	c = (camera.x - cylinder.center.x) * (camera.x - cylinder.center.x) + (camera.z - cylinder.center.z) * (camera.z - cylinder.center.z) - (cylinder.radius * cylinder.radius);
+	float delta = b * b - 4 * (a * c);
+	if (fabsf(delta) < 0)
+		return (set_intersect(0, 999999, 999999));
+	else if (delta == 0)
+		return (set_intersect(1,
+							  ((-b) + sqrtf(delta)) / (2 * a),
+							  ((-b) - sqrtf(delta)) / (2 * a)));
+	else
+		return (set_intersect(2,
+							  ((-b) + sqrtf(delta)) / (2 * a),
+							  ((-b) - sqrtf(delta)) / (2 * a)));
 }
 
 t_vector			vector_dot_scalar(t_vector vector, float num)
@@ -285,6 +309,47 @@ t_object	find_intersected_planes(t_app *app,
 	if (object.distance < prev_object.distance)
 		return (object);
 	return (prev_object);
+}
+
+t_object	find_intersected_cylinders(t_app *app,
+									 t_vector camera, t_vector direct,
+									 float length_min, float length_max)
+{
+	int		i;
+	t_object object;
+	t_sphere_intersect intersect_cylinder;
+
+	i = -1;
+	object.flag = 0;
+	object.distance = 999999;
+	while (++i < app->scene.cylinders_amount)
+	{
+		intersect_cylinder = intersect_ray_cylinder(camera,
+												direct, app->scene.cylinders[i]);
+		if (between(length_min, length_max, intersect_cylinder.first) &&
+				intersect_cylinder.first < object.distance)
+		{
+			object.distance = intersect_cylinder.first;
+			object.center = app->scene.cylinders[i].center;
+			object.color = app->scene.cylinders[i].color;
+			object.specular = app->scene.cylinders[i].specular;
+			object.flag = 1;
+		}
+		if (between(length_min, length_max, intersect_cylinder.second) &&
+				intersect_cylinder.second < object.distance)
+		{
+			object.distance = intersect_cylinder.second;
+			object.center = app->scene.cylinders[i].center;
+			object.color = app->scene.cylinders[i].color;
+			object.specular = app->scene.cylinders[i].specular;
+			object.flag = 1;
+		}
+		float r = camera.y + object.distance * direct.y;
+
+		if (!((r >= object.center.y) && (r <= object.center.y + app->scene.cylinders[i].height)))
+			object.flag = 0;
+	}
+	return (object);
 }
 
 t_color raytrace(t_vector camera, t_vector direct,

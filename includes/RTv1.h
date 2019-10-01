@@ -20,7 +20,7 @@
 # define AMOUNT_CONES 2
 # define AMOUNT_PLANES 2
 # define AMOUNT_CYLINDERS 2
-# define AMOUNT_LIGHTS 3
+# define AMOUNT_LIGHTS 2
 
 typedef struct s_vector
 {
@@ -99,6 +99,9 @@ typedef struct	s_cone
 typedef struct	s_cylinder
 {
 	t_vector		center;
+	float			height;
+	float			radius;
+	int				specular;
 	t_color			color;
 }				t_cylinder;
 
@@ -133,6 +136,7 @@ typedef struct s_scene
 	t_light			*lights;
 	int				lights_amount;
 	int				cur_light_control;
+	int 			cur_obj_control;
 	float			light_speed;
 	t_rotate		rotate;
 }               t_scene;

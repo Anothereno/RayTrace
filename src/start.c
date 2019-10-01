@@ -72,6 +72,18 @@ t_plane new_plane(t_vector center, t_vector normal, t_color color, int specular)
 	return (res);
 }
 
+t_cylinder new_cylinder(t_vector center, float radius, t_color color, float height, int specular)
+{
+	t_cylinder	res;
+
+	res.center = center;
+	res.radius = radius;
+	res.color = color;
+	res.height = height;
+	res.specular = specular;
+	return (res);
+}
+
 t_light new_light(t_vector direct, float intensity, char type)
 {
 	t_light res;
@@ -102,6 +114,12 @@ void	prepare_objects(t_app *app)
 				set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120),10 + i * 30);
 	}
 	i = -1;
+	while (++i < app->scene.cylinders_amount)
+	{
+		app->scene.cylinders[i] = new_cylinder(set_vertex(i - 2, 0, i * 6),
+										   i + 1, set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120), 2.0f + i * 100, 200);
+	}
+	i = -1;
 	while (++i < app->scene.planes_amount)
 	{
 		app->scene.planes[i] = new_plane(set_vertex(0, -3, 8),
@@ -129,9 +147,9 @@ void	prepare_light(t_app *app)
 	app->scene.lights[0].direct = set_vertex(-15, 40, -14);
 	app->scene.lights[1].type = 'a';
 	app->scene.lights[1].intensity = 0.4f;
-	app->scene.lights[2].type = 'd';
-	app->scene.lights[2].intensity = 0.9f;
-	app->scene.lights[2].direct = set_vertex(20, 40, -10);
+//	app->scene.lights[2].type = 'd';
+//	app->scene.lights[2].intensity = 0.9f;
+//	app->scene.lights[2].direct = set_vertex(20, 40, -10);
 }
 
 t_vector rotation_y(t_app *app, t_vector viewport)
