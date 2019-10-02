@@ -84,7 +84,19 @@ t_cylinder new_cylinder(t_vector center, float radius, t_color color, float heig
 	return (res);
 }
 
-t_light new_light(t_vector direct, float intensity, char type)
+t_cone	new_cone(t_vector center, float radius, t_color color, float height, int specular)
+{
+	t_cone	res;
+
+	res.center = center;
+	res.radius = radius;
+	res.color = color;
+	res.height = height;
+	res.specular = specular;
+	return (res);
+}
+
+t_light	new_light(t_vector direct, float intensity, char type)
 {
 	t_light res;
 
@@ -120,12 +132,18 @@ void	prepare_objects(t_app *app)
 										   i + 1, set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120), 2.0f + i * 100, 200);
 	}
 	i = -1;
+	while (++i < app->scene.cones_amount)
+	{
+		app->scene.cones[i] = new_cone(set_vertex(i - 2, 0, i * 6),
+											   i + 1, set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120), 2.0f + i * 100, 200);
+	}
+	i = -1;
 	while (++i < app->scene.planes_amount)
 	{
 		app->scene.planes[i] = new_plane(set_vertex(0, -3, 8),
 				set_vertex(0, i + i * 90, 3), set_color(30, 40, 180), 140);
 	}
-	app->scene.planes[0].color = set_color(0, 200, 0);
+	//app->scene.planes[0].color = set_color(0, 200, 0);
 //	app->scene.spheres[2].center = set_vertex(0, -5001, 0);
 //	app->scene.spheres[2].radius = 5000;
 //	app->scene.spheres[2].color = set_color(255, 255, 0);

@@ -19,9 +19,7 @@ t_vector	vec_normalize(t_vector v)
 
 float	vec_dot(t_vector v1, t_vector v2)
 {
-	return (v1.x * v2.x +
-			v1.y * v2.y +
-			v1.z * v2.z);
+	return (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
 }
 
 t_vector	vec_cross(t_vector v1, t_vector v2)
@@ -42,4 +40,11 @@ t_vector	vec_invert(t_vector v)
 	new_v.y = -v.y;
 	new_v.z = -v.z;
 	return (new_v);
+}
+
+void	vec_invert2(t_vector *v, t_vector *v2)
+{
+	v->x = -v2->x;
+	v->y = -v2->y;
+	v->z = -v2->z;
 }

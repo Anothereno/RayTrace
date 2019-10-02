@@ -10,16 +10,15 @@
 # include <pthread.h>
 # include <SDL.h>
 //# include <SDL_ttf.h>
-# define BLOCK_SIZE	64
 # define RAD 0.0174533f
 # define SCREEN_WIDTH 800
 # define SCREEN_HEIGHT 600
 # define CENTER_WIDTH (SCREEN_WIDTH / 2)
 # define CENTER_HEIGHT (SCREEN_HEIGHT / 2)
 # define AMOUNT_SPHERES 2
-# define AMOUNT_CONES 2
-# define AMOUNT_PLANES 2
-# define AMOUNT_CYLINDERS 2
+# define AMOUNT_CONES 0
+# define AMOUNT_PLANES 0
+# define AMOUNT_CYLINDERS 0
 # define AMOUNT_LIGHTS 2
 
 typedef struct s_vector
@@ -93,8 +92,11 @@ typedef struct s_sphere
 typedef struct	s_cone
 {
 	t_vector		center;
+	float			height;
+	float			radius;
+	int				specular;
 	t_color			color;
-}				t_cone;
+}					t_cone;
 
 typedef struct	s_cylinder
 {
@@ -183,6 +185,13 @@ t_vector			vec_mul_by(t_vector v, float k);
 t_vector			vec_div_by(t_vector v, float k);
 t_vector			vector_mult_scal(t_vector first, float num);
 t_vector			vec_invert(t_vector v);
+
+
+void	vec_invert2(t_vector *v, t_vector *v2);
+void	vector_mult_scal2(t_vector *res,t_vector *first, float num);
+
+
+
 t_vector			vec_point_at(t_vector ori, t_vector dir, float t);
 float				clamp(int min, int max, int num);
 t_color 			set_color(int red, int green, int blue);
@@ -194,6 +203,14 @@ void				redraw(t_app *app);
 t_sphere 			new_sphere(t_vector center, float radius, t_color color, int specular);
 int					check_lights(const uint8_t *key, t_app *app);
 int					check_camera(const uint8_t *key, t_app *app);
-t_object
-find_intersected_spheres(t_app *app, t_vector camera, t_vector direct, float length_min, float length_max);
+t_sphere_intersect	set_intersect(int amount, float first, float second);
+int 				between(float min, float max, float num);
+t_object			find_intersected_cones(t_app *app, t_vector camera, t_vector direct,
+								   float length_min, float length_max);
+t_object			find_intersected_cylinders(t_app *app, t_vector camera, t_vector direct,
+									   float length_min, float length_max);
+t_object			find_intersected_planes(t_app *app, t_vector camera, t_vector direct,
+									float length_min, float length_max, t_object prev_object);
+t_object			find_intersected_spheres(t_app *app, t_vector camera, t_vector direct,
+									 float length_min, float length_max);
 #endif
