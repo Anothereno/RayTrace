@@ -7,7 +7,7 @@ int main()
 	app = (t_app *)malloc(sizeof(t_app));
     app->sdl = (t_sdl *)malloc(sizeof(t_sdl));
 	init_app(app);
-	start_the_game2(app);
+	start_the_game(app);
 
 	return 0;
 }

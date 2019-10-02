@@ -15,18 +15,18 @@
 # define SCREEN_HEIGHT 600
 # define CENTER_WIDTH (SCREEN_WIDTH / 2)
 # define CENTER_HEIGHT (SCREEN_HEIGHT / 2)
-# define AMOUNT_SPHERES 2
+# define AMOUNT_SPHERES 0
 # define AMOUNT_CONES 0
 # define AMOUNT_PLANES 0
-# define AMOUNT_CYLINDERS 0
+# define AMOUNT_CYLINDERS 1
 # define AMOUNT_LIGHTS 2
 
 typedef struct s_vector
 {
-    float		x;
-    float		y;
-    float		z;
-    float		distance;
+    double		x;
+    double		y;
+	double		z;
+    double		distance;
 }				t_vector;
 
 typedef struct      s_ray
@@ -42,8 +42,6 @@ typedef struct		s_sdl
 	SDL_Event		event_mouse;
 	SDL_Window		*window;
 	SDL_Surface		*surface;
-	int				half_height;
-	int				half_width;
 	int				height;
 	int				width;
 }					t_sdl;
@@ -52,9 +50,9 @@ typedef struct s_camera
 {
 	t_vector		camera;
 	t_vector		direct;
-	float 			rotate_angle_y;
-	float			camera_speed;
-	float 			rotate_speed;
+	double 			rotate_angle_y;
+	double			camera_speed;
+	double 			rotate_speed;
 }				t_camera;
 
 typedef struct s_color
@@ -67,7 +65,7 @@ typedef struct s_color
 typedef struct s_ligth
 {
 	char			type;
-	float			intensity;
+	double			intensity;
 	t_vector		direct;
 }				t_light;
 
@@ -83,17 +81,17 @@ typedef struct s_sphere
 {
     int 			mode;
     t_vector		center;
-    float			radius;
+    double			radius;
     t_color			color;
     int				specular;
-    float 			reflective;
+    double 			reflective;
 }				t_sphere;
 
 typedef struct	s_cone
 {
 	t_vector		center;
-	float			height;
-	float			radius;
+	double			height;
+	double			radius;
 	int				specular;
 	t_color			color;
 }					t_cone;
@@ -101,8 +99,8 @@ typedef struct	s_cone
 typedef struct	s_cylinder
 {
 	t_vector		center;
-	float			height;
-	float			radius;
+	double			height;
+	double			radius;
 	int				specular;
 	t_color			color;
 }				t_cylinder;
@@ -114,14 +112,14 @@ typedef struct	s_object
 	t_vector	center;
 	t_color		color;
 	int 		specular;
-	float 		distance;
+	double 		distance;
 }				t_object;
 
 typedef struct s_rotate
 {
-	float			x;
-	float			y;
-	float			z;
+	double			x;
+	double			y;
+	double			z;
 }				t_rotate;
 
 typedef struct s_scene
@@ -139,7 +137,7 @@ typedef struct s_scene
 	int				lights_amount;
 	int				cur_light_control;
 	int 			cur_obj_control;
-	float			light_speed;
+	double			light_speed;
 	t_rotate		rotate;
 }               t_scene;
 
@@ -155,62 +153,66 @@ typedef struct	s_app
 typedef struct s_sphere_intersect
 {
 	int				intersect_amount;
-	float			first;
-	float			second;
+	double			first;
+	double			second;
 	t_sphere		intersected_object;
-}				t_sphere_intersect;
+}				t_object_intersect;
 
-t_sphere_intersect intersect_ray_sphere(t_vector camera, t_vector direct,
-                         t_sphere sphere);
+t_object_intersect intersect_ray_sphere(t_vector camera, t_vector direct,
+										t_sphere sphere);
 void				initialize_sdl(t_app *app);
 void				init(t_app *app);
 int					event_handling(t_app *app);
 void				set_pixel(SDL_Surface *surface, int x, int y, t_color c);
 void				init_app(t_app *app);
-void				start_the_game(t_app *app);
-t_vector 			field_to_view(int x, int y);
+
 t_color				raytrace(t_vector camera, t_vector direct,
-								float length_min, float length_max, t_app *app);
-t_vector 			set_vertex(float x, float y, float z);
-float				vector_dot(t_vector first, t_vector second);
+								double length_min, double length_max, t_app *app);
+t_vector 			set_vertex(double x, double y, double z);
+double				vector_dot(t_vector first, t_vector second);
 t_vector			vector_sub(t_vector first, t_vector second);
-float 				vec_length(t_vector v);
+double 				vec_length(t_vector v);
 t_vector			vec_normalize(t_vector v);
-float				vec_dot(t_vector v1, t_vector v2);
+double				vec_dot(t_vector v1, t_vector v2);
 t_vector			vec_cross(t_vector v1, t_vector v2);
 t_vector			vec_add(t_vector v1, t_vector v2);
-t_vector			vec_new(float x, float y, float z);
+t_vector			vec_new(double x, double y, double z);
 t_vector			vec_sub(t_vector v1, t_vector v2);
-t_vector			vec_mul_by(t_vector v, float k);
-t_vector			vec_div_by(t_vector v, float k);
-t_vector			vector_mult_scal(t_vector first, float num);
+t_vector			vec_mul_by(t_vector v, double k);
+t_vector			vec_div_by(t_vector v, double k);
+t_vector			vector_mult_scal(t_vector first, double num);
 t_vector			vec_invert(t_vector v);
+t_sphere			new_sphere(t_vector center, double radius, t_color color, int specular);
+t_cylinder			new_cylinder(t_vector center, double radius, t_color color, double height, int specular);
+t_plane				new_plane(t_vector center, t_vector normal, t_color color, int specular);
+t_cone				new_cone(t_vector center, double radius, t_color color, double height, int specular);
+t_light				new_light(t_vector direct, double intensity, char type);
 
 
-void	vec_invert2(t_vector *v, t_vector *v2);
-void	vector_mult_scal2(t_vector *res,t_vector *first, float num);
+void			vec_invert2(t_vector *v, t_vector *v2);
+void			vector_mult_scal2(t_vector *res,t_vector *first, double num);
+t_vector		set_vertex2(double *x, double *y, double *z);
+double vector_dot2(t_vector *first, t_vector *second);
 
 
-
-t_vector			vec_point_at(t_vector ori, t_vector dir, float t);
-float				clamp(int min, int max, int num);
+t_vector			vec_point_at(t_vector ori, t_vector dir, double t);
+double				clamp(int min, int max, int num);
 t_color 			set_color(int red, int green, int blue);
-void				start_the_game2(t_app *app);
+void				start_the_game(t_app *app);
 int					event_handling2(t_app *app);
-t_vector			to_vieport2(int x, int y);
-float				vector_length(t_vector vector);
+double				vector_length(t_vector vector);
 void				redraw(t_app *app);
-t_sphere 			new_sphere(t_vector center, float radius, t_color color, int specular);
+t_sphere 			new_sphere(t_vector center, double radius, t_color color, int specular);
 int					check_lights(const uint8_t *key, t_app *app);
 int					check_camera(const uint8_t *key, t_app *app);
-t_sphere_intersect	set_intersect(int amount, float first, float second);
-int 				between(float min, float max, float num);
+t_object_intersect	set_intersect(int amount, double first, double second);
+int 				between(double min, double max, double num);
 t_object			find_intersected_cones(t_app *app, t_vector camera, t_vector direct,
-								   float length_min, float length_max);
+								   double length_min, double length_max, t_object prev_object);
 t_object			find_intersected_cylinders(t_app *app, t_vector camera, t_vector direct,
-									   float length_min, float length_max);
+									   double length_min, double length_max, t_object prev_object);
 t_object			find_intersected_planes(t_app *app, t_vector camera, t_vector direct,
-									float length_min, float length_max, t_object prev_object);
+									double length_min, double length_max, t_object prev_object);
 t_object			find_intersected_spheres(t_app *app, t_vector camera, t_vector direct,
-									 float length_min, float length_max);
+									 double length_min, double length_max);
 #endif

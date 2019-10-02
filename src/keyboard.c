@@ -20,18 +20,18 @@ int		check_camera(const uint8_t *key, t_app *app)
 	{
 		angle = app->camera.rotate_angle_y - 90 * RAD;
 		app->camera.camera.x = app->camera.camera.x
-				+ app->camera.camera_speed * sinf(angle);
+				+ app->camera.camera_speed * sin(angle);
 		app->camera.camera.z = app->camera.camera.z
-							   + app->camera.camera_speed * cosf(angle);
+							   + app->camera.camera_speed * cos(angle);
 		a = 1;
 	}
 	if (key[SDL_SCANCODE_D])
 	{
 		angle = app->camera.rotate_angle_y + 90 * RAD;
 		app->camera.camera.x = app->camera.camera.x
-							   + app->camera.camera_speed * sinf(angle);
+							   + app->camera.camera_speed * sin(angle);
 		app->camera.camera.z = app->camera.camera.z
-							   + app->camera.camera_speed * cosf(angle);
+							   + app->camera.camera_speed * cos(angle);
 		a = 1;
 	}
 	if (key[SDL_SCANCODE_UP])
@@ -48,10 +48,10 @@ int		check_camera(const uint8_t *key, t_app *app)
 	{
 		app->camera.camera.x = app->camera.camera.x
 							   + app->camera.camera_speed
-							   * sinf(app->camera.rotate_angle_y);
+							   * sin(app->camera.rotate_angle_y);
 		app->camera.camera.z = app->camera.camera.z
 							   + app->camera.camera_speed
-							   * cosf(app->camera.rotate_angle_y);
+							   * cos(app->camera.rotate_angle_y);
 
 		a = 1;
 	}
@@ -59,9 +59,9 @@ int		check_camera(const uint8_t *key, t_app *app)
 	{
 		angle = app->camera.rotate_angle_y + 180 * RAD;
 		app->camera.camera.x = app->camera.camera.x
-							   + app->camera.camera_speed * sinf(angle);
+							   + app->camera.camera_speed * sin(angle);
 		app->camera.camera.z = app->camera.camera.z
-							   + app->camera.camera_speed * cosf(angle);
+							   + app->camera.camera_speed * cos(angle);
 		a = 1;
 	}
 	return (a);
@@ -91,10 +91,10 @@ int		check_lights(const uint8_t *key, t_app *app)
 		angle = app->camera.rotate_angle_y - 90 * RAD;
 		app->scene.lights[app->scene.cur_light_control].direct.x =
 				app->scene.lights[app->scene.cur_light_control].direct.x
-				+ app->scene.light_speed * sinf(angle);
+				+ app->scene.light_speed * sin(angle);
 		app->scene.lights[app->scene.cur_light_control].direct.z =
 				app->scene.lights[app->scene.cur_light_control].direct.z
-				+ app->scene.light_speed * cosf(angle);
+				+ app->scene.light_speed * cos(angle);
 //		app->scene.lights[app->scene.cur_light_control].direct.x -= app->scene.light_speed;
 		a = 1;
 	}
@@ -103,10 +103,10 @@ int		check_lights(const uint8_t *key, t_app *app)
 		angle = app->camera.rotate_angle_y + 90 * RAD;
 		app->scene.lights[app->scene.cur_light_control].direct.x =
 				app->scene.lights[app->scene.cur_light_control].direct.x
-				+ app->scene.light_speed * sinf(angle);
+				+ app->scene.light_speed * sin(angle);
 		app->scene.lights[app->scene.cur_light_control].direct.z =
 				app->scene.lights[app->scene.cur_light_control].direct.z
-				+ app->scene.light_speed * cosf(angle);
+				+ app->scene.light_speed * cos(angle);
 		a = 1;
 	}
 	if (key[SDL_SCANCODE_KP_5])
@@ -114,20 +114,20 @@ int		check_lights(const uint8_t *key, t_app *app)
 		angle = app->camera.rotate_angle_y + 180 * RAD;
 		app->scene.lights[app->scene.cur_light_control].direct.x =
 				app->scene.lights[app->scene.cur_light_control].direct.x
-				+ app->scene.light_speed * sinf(angle);
+				+ app->scene.light_speed * sin(angle);
 		app->scene.lights[app->scene.cur_light_control].direct.z =
 				app->scene.lights[app->scene.cur_light_control].direct.z
-				+ app->scene.light_speed * cosf(angle);
+				+ app->scene.light_speed * cos(angle);
 		a = 1;
 	}
 	if (key[SDL_SCANCODE_KP_8])
 	{
 		app->scene.lights[app->scene.cur_light_control].direct.x =
 				app->scene.lights[app->scene.cur_light_control].direct.x
-				+ app->scene.light_speed * sinf(app->camera.rotate_angle_y);
+				+ app->scene.light_speed * sin(app->camera.rotate_angle_y);
 		app->scene.lights[app->scene.cur_light_control].direct.z =
 				app->scene.lights[app->scene.cur_light_control].direct.z
-				+ app->scene.light_speed * cosf(app->camera.rotate_angle_y);
+				+ app->scene.light_speed * cos(app->camera.rotate_angle_y);
 		a = 1;
 	}
 	if (key[SDL_SCANCODE_KP_9])

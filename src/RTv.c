@@ -12,7 +12,7 @@
 
 #include "RTv1.h"
 
-t_vector set_vertex(float x, float y, float z)
+t_vector set_vertex(double x, double y, double z)
 {
 	t_vector res;
 
@@ -42,7 +42,8 @@ t_vector	vector_sub(t_vector first, t_vector second)
 	return (res);
 }
 
-t_vector	vector_sub2(t_vector *res,t_vector *first, t_vector *second)
+
+void	vector_sub3(t_vector *res,t_vector *first, t_vector *second)
 {
 
 	res->x = first->x - second->x;
@@ -50,7 +51,7 @@ t_vector	vector_sub2(t_vector *res,t_vector *first, t_vector *second)
 	res->z = first->z - second->z;
 }
 
-t_vector	vector_div_scal(t_vector first, float num)
+t_vector	vector_div_scal(t_vector first, double num)
 {
 	t_vector res;
 
@@ -60,7 +61,7 @@ t_vector	vector_div_scal(t_vector first, float num)
 	return (res);
 }
 
-t_vector	vector_mult_scal(t_vector first, float num)
+t_vector	vector_mult_scal(t_vector first, double num)
 {
 	t_vector res;
 
@@ -70,16 +71,16 @@ t_vector	vector_mult_scal(t_vector first, float num)
 	return (res);
 }
 
-void	vector_mult_scal2(t_vector *res,t_vector *first, float num)
+void	vector_mult_scal2(t_vector *res,t_vector *first, double num)
 {
 	res->x = first->x * num;
 	res->y = first->y * num;
 	res->z = first->z * num;
 }
 
-t_sphere_intersect set_intersect(int amount, float first, float second)
+t_object_intersect set_intersect(int amount, double first, double second)
 {
-	t_sphere_intersect res;
+	t_object_intersect res;
 
 	res.intersect_amount = amount;
 	res.first = first;
@@ -97,27 +98,27 @@ t_color set_color(int red, int green, int blue)
 	return (color);
 }
 
-float vector_dot(t_vector first, t_vector second)
+double vector_dot(t_vector first, t_vector second)
 {
 	return (first.x * second.x + first.y * second.y + first.z * second.z);
 }
 
-float vector_dot2(t_vector *first, t_vector *second)
+double vector_dot2(t_vector *first, t_vector *second)
 {
 	return (first->x * second->x + first->y * second->y + first->z * second->z);
 }
 
-float	vector_length(t_vector vector)
+double	vector_length(t_vector vector)
 {
-	return (sqrtf(vector_dot(vector, vector)));
+	return (sqrt(vector_dot(vector, vector)));
 }
 
-float	vector_length2(t_vector *vector)
+double	vector_length2(t_vector *vector)
 {
-	return (sqrtf(vector_dot2(vector, vector)));
+	return (sqrt(vector_dot2(vector, vector)));
 }
 
-t_vector			vector_dot_scalar(t_vector vector, float num)
+t_vector			vector_dot_scalar(t_vector vector, double num)
 {
 	t_vector res;
 
@@ -127,24 +128,24 @@ t_vector			vector_dot_scalar(t_vector vector, float num)
 	return (res);
 }
 
-int 	between(float min, float max, float num)
+int 	between(double min, double max, double num)
 {
 	if (num >= min && num <= max)
 		return (1);
 	return (0);
 }
 
-float 	light_calculate(t_vector plane, t_vector normal, t_app *app, int specular)
+double 	light_calculate(t_vector plane, t_vector normal, t_app *app, int specular)
 {
-	float		res;
+	double		res;
 	t_vector	L;
 	t_vector	R;
 	t_vector	V;
 	t_object	object;
-	float		max;
+	double		max;
 	int			i;
-	float		dot;
-	float		rot;
+	double		dot;
+	double		rot;
 
 	i = -1;
 	res = 0.0f;
@@ -176,17 +177,17 @@ float 	light_calculate(t_vector plane, t_vector normal, t_app *app, int specular
 				vec_invert2(&V, &app->camera.direct);
 				vector_mult_scal2(&R ,&normal, 2);
 				vector_mult_scal2(&R ,&R, dot);
-				vector_sub2(&R, &R, &L);
+				vector_sub3(&R, &R, &L);
 				rot = vector_dot2(&R, &V);
 				if (rot > 0)
-					res += app->scene.lights[i].intensity * powf(rot / (vector_length2(&R) * vector_length2(&V)), specular);
+					res += app->scene.lights[i].intensity * pow(rot / (vector_length2(&R) * vector_length2(&V)), specular);
 			}
 		}
 	}
 	return (res);
 }
 
-t_color pallete(t_color color, float num)
+t_color pallete(t_color color, double num)
 {
 	t_color res;
 
@@ -197,26 +198,20 @@ t_color pallete(t_color color, float num)
 }
 
 t_color raytrace(t_vector camera, t_vector direct,
-				 float length_min, float length_max, t_app *app)
+				 double length_min, double length_max, t_app *app)
 {
 	t_vector	plane;
 	t_vector	normal;
 	t_object	object;
 
-	object = find_intersected_spheres(app, app->camera.camera,
-			app->camera.direct, length_min, length_max);
-	//object = find_intersected_planes(app, app->camera.camera,
-			//app->camera.direct, length_min, length_max, object);
-	//object = find_intersected_cylinders(app, app->camera.camera,
-									 //app->camera.direct, length_min, length_max);
-	//object = find_intersected_cones(app, app->camera.camera,
-										//app->camera.direct, length_min, length_max);
+	object = find_intersected_spheres(app, app->camera.camera, app->camera.direct, length_min, length_max);
+	object = find_intersected_planes(app, app->camera.camera, app->camera.direct, length_min, length_max, object);
+	object = find_intersected_cylinders(app, app->camera.camera, app->camera.direct, length_min, length_max, object);
+	object = find_intersected_cones(app, app->camera.camera, app->camera.direct, length_min, length_max, object);
 	if (!object.flag)
 		return (set_color(0, 0, 0));
 	plane = vector_add(camera, vector_dot_scalar(direct, object.distance));
 	normal = vector_sub(plane, object.center);
 	normal = vector_div_scal(normal, vector_length(normal));
-	return pallete(object.color,
-			light_calculate(plane, normal, app,
-			object.specular));
+	return pallete(object.color, light_calculate(plane, normal, app, object.specular));
 }
