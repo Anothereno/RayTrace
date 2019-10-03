@@ -47,8 +47,9 @@ void	prepare_objects(t_scene *scene)
 	i = -1;
 	while (++i < scene->planes_amount)
 		scene->planes[i] = new_plane(set_vertex(0, -3, 8),
-				set_vertex(0, i + i * 90, 3), set_color(30, 40, 180), 140);
-	i = -1;
+				set_vertex(0, i + i * 90, 3), set_color(30, 40, 180), 130);
+//	scene->spheres[0].center = set_vertex(0, -3, 8);
+//	scene->spheres[0].radius = 1;
 
 }
 
@@ -61,14 +62,14 @@ void	prepare_light(t_scene *scene)
 	{
 		scene->lights[i] = new_light(set_vertex(-20 + i, 6 + i, -20 + i), 2.0f, 'p');
 	}
-	scene->lights[0].type = 'd';
+	scene->lights[0].type = 'p';
 	scene->lights[0].intensity = 0.9f;
-	scene->lights[0].direct = set_vertex(-15, 40, -14);
-	scene->lights[1].type = 'a';
-	scene->lights[1].intensity = 0.4f;
-//	app->scene.lights[2].type = 'd';
-//	app->scene.lights[2].intensity = 0.9f;
-//	app->scene.lights[2].direct = set_vertex(20, 40, -10);
+	scene->lights[0].direct = set_vertex(0, 4, -1);
+//	scene->lights[1].type = 'a';
+//	scene->lights[1].intensity = 0.4f;
+//	scene->lights[2].type = 'd';
+//	scene->lights[2].intensity = 0.9f;
+//	scene->lights[2].direct = set_vertex(20, 40, -10);
 }
 
 t_vector rotation_y(t_camera *camera, t_vector viewport)

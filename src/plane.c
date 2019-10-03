@@ -11,6 +11,15 @@ t_plane new_plane(t_vector center, t_vector normal, t_color color, int specular)
 	return (res);
 }
 
+//double	intersect_ray_plane(t_vector camera, t_vector direct,
+//							 t_plane plane)
+//{
+//	double		distance;
+//	double		plane_dot_ray;
+//	t_vector	plane_sub_ray;
+//	double		plane_dot_psr;
+//
+//}
 double	intersect_ray_plane(t_vector camera, t_vector direct,
 							 t_plane plane)
 {
@@ -22,6 +31,8 @@ double	intersect_ray_plane(t_vector camera, t_vector direct,
 	plane_dot_ray = vector_dot(plane.normal, direct);
 	plane_sub_ray = vector_sub(plane.center, camera);
 	plane_dot_psr = vector_dot(plane.normal, plane_sub_ray);
+	if (plane_dot_ray == 0)
+		return (999999);
 	distance = plane_dot_psr / plane_dot_ray;
 	return (distance);
 }
@@ -47,6 +58,8 @@ t_object	find_intersected_planes(t_app *app, t_vector camera, t_vector direct,
 			object.center = app->scene.planes[i].center;
 			object.color = app->scene.planes[i].color;
 			object.specular = app->scene.planes[i].specular;
+			app->scene.cur_obj_type = 'p';
+			object.plane_normal = app->scene.planes[i].normal;
 			object.flag = 1;
 		}
 	}

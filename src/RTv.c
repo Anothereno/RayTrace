@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/07 17:22:21 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/01 17:57:59 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/03 18:17:40 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,8 +165,16 @@ double 	light_calculate(t_vector plane, t_vector normal, t_app *app, int specula
 				L = app->scene.lights[i].direct;
 				max = 999999;
 			}
-			object = find_intersected_spheres(app, plane, L, 0.001f, max);
-			if (object.flag != 0)
+//			if (app->scene.cur_obj_type == 's')
+				object = find_intersected_spheres(app, plane, L, 0.001f, max);
+//			else if (app->scene.cur_obj_type == 'c')
+				object = find_intersected_cones(app, plane, L, 0.001f, max, object);
+//			else if (app->scene.cur_obj_type == 'p')
+//				object = find_intersected_planes(app, plane, L, 0.001f, max, object);
+//			else if (app->scene.cur_obj_type == 'y')
+				object = find_intersected_cylinders(app, plane, L, 0.001f, max, object);
+
+			if (object.flag != 0 || object.object_type == 'p')
 				continue;
 			dot = vector_dot(normal, L);
 			if (dot > 0)
@@ -211,7 +219,12 @@ t_color raytrace(t_vector camera, t_vector direct,
 	if (!object.flag)
 		return (set_color(0, 0, 0));
 	plane = vector_add(camera, vector_dot_scalar(direct, object.distance));
-	normal = vector_sub(plane, object.center);
-	normal = vector_div_scal(normal, vector_length(normal));
-	return pallete(object.color, light_calculate(plane, normal, app, object.specular));
+	if (object.object_type != 'p')
+	{
+		normal = vector_sub(plane, object.center);
+		normal = vector_div_scal(normal, vector_length(normal));
+		return pallete(object.color, light_calculate(plane, normal, app, object.specular));
+	}
+	return pallete(object.color, light_calculate(plane, object.plane_normal, app, object.specular));
+
 }

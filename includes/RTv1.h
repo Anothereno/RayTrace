@@ -11,15 +11,15 @@
 # include <SDL.h>
 //# include <SDL_ttf.h>
 # define RAD 0.0174533f
-# define SCREEN_WIDTH 800
-# define SCREEN_HEIGHT 600
+# define SCREEN_WIDTH 400
+# define SCREEN_HEIGHT 400
 # define CENTER_WIDTH (SCREEN_WIDTH / 2)
 # define CENTER_HEIGHT (SCREEN_HEIGHT / 2)
 # define AMOUNT_SPHERES 0
-# define AMOUNT_CONES 0
-# define AMOUNT_PLANES 0
-# define AMOUNT_CYLINDERS 1
-# define AMOUNT_LIGHTS 2
+# define AMOUNT_CONES 1
+# define AMOUNT_PLANES 1
+# define AMOUNT_CYLINDERS 0
+# define AMOUNT_LIGHTS 1
 
 typedef struct s_vector
 {
@@ -113,6 +113,7 @@ typedef struct	s_object
 	t_color		color;
 	int 		specular;
 	double 		distance;
+	t_vector	plane_normal;
 }				t_object;
 
 typedef struct s_rotate
@@ -124,6 +125,7 @@ typedef struct s_rotate
 
 typedef struct s_scene
 {
+	char 			cur_obj_type;
     int				spheres_amount;
     int				planes_amount;
     int				cones_amount;

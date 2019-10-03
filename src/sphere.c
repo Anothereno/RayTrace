@@ -57,6 +57,7 @@ t_object	find_intersected_spheres(t_app *app, t_vector camera, t_vector direct,
 			object.center = app->scene.spheres[i].center;
 			object.color = app->scene.spheres[i].color;
 			object.specular = app->scene.spheres[i].specular;
+			app->scene.cur_obj_type = 's';
 			object.flag = 1;
 		}
 		if (between(length_min, length_max, intersect_sphere.second) &&
@@ -66,6 +67,7 @@ t_object	find_intersected_spheres(t_app *app, t_vector camera, t_vector direct,
 			object.center = app->scene.spheres[i].center;
 			object.color = app->scene.spheres[i].color;
 			object.specular = app->scene.spheres[i].specular;
+			app->scene.cur_obj_type = 's';
 			object.flag = 1;
 		}
 	}

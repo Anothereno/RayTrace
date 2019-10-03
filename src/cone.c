@@ -67,6 +67,7 @@ t_object	find_intersected_cones(t_app *app, t_vector camera, t_vector direct,
 			object.center = app->scene.cones[i].center;
 			object.color = app->scene.cones[i].color;
 			object.specular = app->scene.cones[i].specular;
+			app->scene.cur_obj_type = 'c';
 			object.flag = 1;
 		}
 		if (between(length_min, length_max, intersect_cone.second) &&
@@ -76,12 +77,13 @@ t_object	find_intersected_cones(t_app *app, t_vector camera, t_vector direct,
 			object.center = app->scene.cones[i].center;
 			object.color = app->scene.cones[i].color;
 			object.specular = app->scene.cones[i].specular;
+			app->scene.cur_obj_type = 'c';
 			object.flag = 1;
 		}
 		double r = camera.y + object.distance * direct.y;
 
-		if (!((r > object.center.y) && (r < object.center.y + app->scene.cones[i].height)))
-			object.flag = 0;
+//		if (!((r > object.center.y) && (r < object.center.y + app->scene.cones[i].height)))
+//			object.flag = 0;
 	}
 	if (object.distance < prev_object.distance)
 		return (object);
