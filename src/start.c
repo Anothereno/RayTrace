@@ -48,6 +48,7 @@ void	prepare_objects(t_scene *scene)
 	while (++i < scene->planes_amount)
 		scene->planes[i] = new_plane(set_vertex(0, -3, 8),
 				set_vertex(0, i + i * 90, 3), set_color(30, 40, 180), 140);
+	i = -1;
 
 }
 
