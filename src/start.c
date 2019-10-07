@@ -12,6 +12,7 @@ t_vector to_viewport(int x, int y)
 	vector.x *= u_scale;
 	vector.y *= v_scale;
 	vector.z = 1.0f;
+	//vec_normalize(vector);
 	return (vector);
 }
 
@@ -35,21 +36,22 @@ void	prepare_objects(t_scene *scene)
 	i = -1;
 	while (++i < scene->cylinders_amount)
 	{
+		t_vector rotate = set_vertex(0,0,45);
 		scene->cylinders[i] = new_cylinder(set_vertex(i - 2, 0, i * 6),
-										   i + 1, set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120), 2.0f + i * 100, 200);
+										   i + 1, set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120), 2.0 + i * 100, 200, rotate);
 	}
 	i = -1;
 	while (++i < scene->cones_amount)
 	{
+		t_vector rotate = set_vertex(0,0,45);
 		scene->cones[i] = new_cone(set_vertex(i - 2, (i * 2) - 1, i * 6),
-											   i + 1, set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120), 2.0f + i * 2, 200);
+											   i + 1, set_color(30 * i *2 + 50, 20 * i + 30, 20 * i + 120), 2.0 + i * 2, 200, rotate);
 	}
 	i = -1;
 	while (++i < scene->planes_amount)
 		scene->planes[i] = new_plane(set_vertex(0, -3, 8),
-				set_vertex(0, i + i * 90, 3), set_color(30, 40, 180), 130);
-//	scene->spheres[0].center = set_vertex(0, -3, 8);
-//	scene->spheres[0].radius = 1;
+				set_vertex(0, i + i * 150, 3), set_color(30, 40, 180), 140);
+	i = -1;
 
 }
 
@@ -62,14 +64,14 @@ void	prepare_light(t_scene *scene)
 	{
 		scene->lights[i] = new_light(set_vertex(-20 + i, 6 + i, -20 + i), 2.0f, 'p');
 	}
-	scene->lights[0].type = 'p';
+	scene->lights[0].type = 'd';
 	scene->lights[0].intensity = 0.9f;
-	scene->lights[0].direct = set_vertex(0, 4, -1);
-//	scene->lights[1].type = 'a';
-//	scene->lights[1].intensity = 0.4f;
-//	scene->lights[2].type = 'd';
-//	scene->lights[2].intensity = 0.9f;
-//	scene->lights[2].direct = set_vertex(20, 40, -10);
+	scene->lights[0].direct = set_vertex(-15, 40, -14);
+	scene->lights[1].type = 'a';
+	scene->lights[1].intensity = 0.4f;
+//	app->scene.lights[2].type = 'd';
+//	app->scene.lights[2].intensity = 0.9f;
+//	app->scene.lights[2].direct = set_vertex(20, 40, -10);
 }
 
 t_vector rotation_y(t_camera *camera, t_vector viewport)
@@ -79,6 +81,7 @@ t_vector rotation_y(t_camera *camera, t_vector viewport)
 	res.x = viewport.x * cos(camera->rotate_angle_y)  + viewport.z * sin(camera->rotate_angle_y);
 	res.y = viewport.y;
 	res.z = viewport.x * sin(camera->rotate_angle_y) * -1.0f + viewport.z * cos(camera->rotate_angle_y);
+	//vec_normalize(res);
 	return (res);
 }
 
@@ -86,7 +89,7 @@ void	start_the_game(t_app *app)
 {
 	prepare_light(&app->scene);
 	prepare_objects(&app->scene);
-	app->camera.camera = set_vertex(0.0, 0.0, -5.50);
+	app->camera.camera = set_vertex(0.0, 0.0, -10.50);
 	redraw(app);
 	while (1)
 	{

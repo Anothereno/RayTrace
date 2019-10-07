@@ -24,7 +24,7 @@ void	init_app(t_app *app)
 	app->sdl->width = SCREEN_WIDTH;
 	app->sdl->height = SCREEN_HEIGHT;
 	SDL_Error(SDL_Init(SDL_INIT_VIDEO));
-	app->sdl->window = SDL_CreateWindow("RTv1", 100, 400,
+	app->sdl->window = SDL_CreateWindow("RTv1", 500, 400,
 			SCREEN_WIDTH, SCREEN_HEIGHT, 0);
 	app->sdl->surface = SDL_GetWindowSurface(app->sdl->window);
 	app->sdl->keys = SDL_GetKeyboardState(NULL);

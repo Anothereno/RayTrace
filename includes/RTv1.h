@@ -11,29 +11,32 @@
 # include <SDL.h>
 //# include <SDL_ttf.h>
 # define RAD 0.0174533f
-# define SCREEN_WIDTH 400
-# define SCREEN_HEIGHT 400
+# define SCREEN_WIDTH 800
+# define SCREEN_HEIGHT 600
 # define CENTER_WIDTH (SCREEN_WIDTH / 2)
 # define CENTER_HEIGHT (SCREEN_HEIGHT / 2)
 # define AMOUNT_SPHERES 0
 # define AMOUNT_CONES 1
-# define AMOUNT_PLANES 1
+# define AMOUNT_PLANES 2
 # define AMOUNT_CYLINDERS 0
-# define AMOUNT_LIGHTS 1
+# define AMOUNT_LIGHTS 2
 
 typedef struct s_vector
 {
     double		x;
     double		y;
 	double		z;
-    double		distance;
 }				t_vector;
 
-typedef struct      s_ray
+
+typedef struct      s_intersect
 {
-    t_vector        camera;
-    t_vector        direct;
-}                   t_ray;
+	t_vector		oc;
+	double			a;
+	double			b;
+	double			c;
+	double			delta;
+}                   t_intersect;
 
 typedef struct		s_sdl
 {
@@ -62,7 +65,7 @@ typedef struct s_color
     int				blue;
 }				t_color;
 
-typedef struct s_ligth
+typedef struct s_light
 {
 	char			type;
 	double			intensity;
@@ -91,6 +94,7 @@ typedef struct	s_cone
 {
 	t_vector		center;
 	double			height;
+	t_vector		axis;
 	double			radius;
 	int				specular;
 	t_color			color;
@@ -99,6 +103,7 @@ typedef struct	s_cone
 typedef struct	s_cylinder
 {
 	t_vector		center;
+	t_vector		axis;
 	double			height;
 	double			radius;
 	int				specular;
@@ -110,6 +115,7 @@ typedef struct	s_object
 	int 		flag;
 	char 		object_type;
 	t_vector	center;
+	t_vector	axis;
 	t_color		color;
 	int 		specular;
 	double 		distance;
@@ -185,9 +191,9 @@ t_vector			vec_div_by(t_vector v, double k);
 t_vector			vector_mult_scal(t_vector first, double num);
 t_vector			vec_invert(t_vector v);
 t_sphere			new_sphere(t_vector center, double radius, t_color color, int specular);
-t_cylinder			new_cylinder(t_vector center, double radius, t_color color, double height, int specular);
+t_cylinder 			new_cylinder(t_vector center, double radius, t_color color, double height, int specular, t_vector rot);
 t_plane				new_plane(t_vector center, t_vector normal, t_color color, int specular);
-t_cone				new_cone(t_vector center, double radius, t_color color, double height, int specular);
+t_cone				new_cone(t_vector center, double radius, t_color color, double height, int specular, t_vector rot);
 t_light				new_light(t_vector direct, double intensity, char type);
 
 
@@ -204,6 +210,8 @@ void				start_the_game(t_app *app);
 int					event_handling2(t_app *app);
 double				vector_length(t_vector vector);
 void				redraw(t_app *app);
+
+void				set_axis(t_vector *axis, t_vector rot);
 t_sphere 			new_sphere(t_vector center, double radius, t_color color, int specular);
 int					check_lights(const uint8_t *key, t_app *app);
 int					check_camera(const uint8_t *key, t_app *app);
