@@ -1,0 +1,12 @@
+camera  0  10 20  0 0 0
+light       10 6 -3  150
+light       2 6 5  15
+
+plane       0 -5 0  0 0 0
+plane       0 0 -10  90 0 0
+sphere      -4 3 -3  3
+
+cylinder    5 0 0  0 0 0  1
+cylinder    7 0 0  0 0 0  1
+
+"./levels/1.wolf3d"

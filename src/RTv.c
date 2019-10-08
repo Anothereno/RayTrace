@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/07 17:22:21 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/07 18:02:42 by ndremora         ###   ########.fr       */
+/*   Updated: 2019/10/08 12:27:41 by ndremora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ int 	between(double min, double max, double num)
 	return (0);
 }
 
-double 	 light_calculate(t_vector plane, t_vector normal, t_app *app, int specular)
+double 	light_calculate(t_vector plane, t_vector normal, t_app *app, int specular)
 {
 	double		res;
 	t_vector	L;
@@ -187,62 +187,6 @@ double 	 light_calculate(t_vector plane, t_vector normal, t_app *app, int specul
 	return (res);
 }
 
-double 	 light_calculate2(t_vector plane, t_vector normal, t_app *app, int specular, t_object object)
-{
-	double		res;
-	t_vector	L;
-	t_vector	R;
-	t_vector	V;
-	t_object	object2;
-	double		max;
-	int			i;
-	double		dot;
-	double		rot;
-
-	i = -1;
-	res = 0.0;
-	while (++i < app->scene.lights_amount)
-	{
-		if (app->scene.lights[i].type == 'a')
-			res += app->scene.lights[i].intensity;
-		else
-		{
-			if (app->scene.lights[i].type == 'p')
-			{
-				L = vector_sub(app->scene.lights[i].direct, plane);
-				max = 1;
-			}
-			else
-			{
-				L = app->scene.lights[i].direct;
-				max = 999999;
-			}
-			L = vec_normalize(L);
-			//if (object.object_type == 's')
-				object = find_intersected_spheres(app, plane, L, 0.001f, max);
-			//if (object.object_type == 'p')
-			//	object = find_intersected_spheres(app, plane, L, 0.001f, max);
-			if (object.flag != 0)
-				continue;
-			dot = vector_dot(normal, L);
-			if (dot > 0)
-				res += app->scene.lights[i].intensity * dot / (vector_length(normal) * vector_length2(&L));
-				//res += 24 / (vector_length(normal) * vector_length2(&L));
-			if(specular != -1)
-			{
-				vec_invert2(&V, &app->camera.direct);
-				vector_mult_scal2(&R ,&normal, 2);
-				vector_mult_scal2(&R ,&R, dot);
-				vector_sub3(&R, &R, &L);
-				rot = vector_dot2(&R, &V);
-				if (rot > 0)
-					res += app->scene.lights[i].intensity * pow(rot / (vector_length2(&R) * vector_length2(&V)), specular);
-			}
-		}
-	}
-	return (res);
-}
-
 t_color pallete(t_color color, double num)
 {
 	t_color res;
@@ -269,6 +213,5 @@ t_color raytrace(t_vector camera, t_vector direct,
 	plane = vector_add(camera, vector_dot_scalar(direct, object.distance));
 	normal = vector_sub(plane, object.center);
 	normal = vector_div_scal(normal, vector_length(normal));
-	return pallete(object.color, light_calculate2(plane, normal, app, object.specular, object));
-	//return pallete(object.color, light_calculate(plane, normal, app, object.specular));
+	return pallete(object.color, light_calculate(plane, normal, app, object.specular));
 }

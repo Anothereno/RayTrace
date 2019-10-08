@@ -16,9 +16,9 @@
 # define CENTER_WIDTH (SCREEN_WIDTH / 2)
 # define CENTER_HEIGHT (SCREEN_HEIGHT / 2)
 # define AMOUNT_SPHERES 0
-# define AMOUNT_CONES 1
+# define AMOUNT_CONES 0
 # define AMOUNT_PLANES 2
-# define AMOUNT_CYLINDERS 0
+# define AMOUNT_CYLINDERS 1
 # define AMOUNT_LIGHTS 2
 
 typedef struct s_vector
@@ -155,6 +155,8 @@ typedef struct	s_app
 	const Uint8		*keys;
 	t_scene			scene;
 	t_camera		camera;
+	char			*cur_scene;
+	int 			number_scene;
 
 }				t_app;
 
@@ -225,4 +227,7 @@ t_object			find_intersected_planes(t_app *app, t_vector camera, t_vector direct,
 									double length_min, double length_max, t_object prev_object);
 t_object			find_intersected_spheres(t_app *app, t_vector camera, t_vector direct,
 									 double length_min, double length_max);
+int					map_read(int fd, t_app *app);
+
+
 #endif
