@@ -22,19 +22,15 @@ t_object_intersect	intersect_ray_sphere(t_vector camera, t_vector direct,
 
 	oc = vector_sub(camera, sphere.center);
 	a = vector_dot(direct, direct);
-	b = 2.0f * vector_dot(oc, direct);
+	b = 2.0f * vector_dot(direct, oc);
 	c = vector_dot(oc, oc) - sphere.radius * sphere.radius;
 	discr = b * b - 4 * a * c;
 	if (discr < 0)
-		return (set_intersect(0, 999999, 999999));
-	else if (discr == 0)
-		return (set_intersect(1,
-							  ((-b) + sqrt(discr)) / (2 * a),
-							  ((-b) - sqrt(discr)) / (2 * a)));
+		return (set_intersect(INF, INF));
 	else
-		return (set_intersect(2,
-							  ((-b) + sqrt(discr)) / (2 * a),
-							  ((-b) - sqrt(discr)) / (2 * a)));
+		return (set_intersect(
+				((-b) + sqrt(discr)) / (2 * a),
+				((-b) - sqrt(discr)) / (2 * a)));
 }
 
 t_object	find_intersected_spheres(t_app *app, t_vector camera, t_vector direct,
@@ -46,30 +42,20 @@ t_object	find_intersected_spheres(t_app *app, t_vector camera, t_vector direct,
 
 	i = -1;
 	object.flag = 0;
-	object.distance = 999999;
+	object.distance = INF;
 	while (++i < app->scene.spheres_amount)
 	{
 		intersect_sphere = intersect_ray_sphere(camera, direct, app->scene.spheres[i]);
-		if (between(length_min, length_max, intersect_sphere.first) &&
-			intersect_sphere.first < object.distance)
+		if (between(length_min, INF, intersect_sphere.distance) &&
+			intersect_sphere.distance < object.distance)
 		{
-			object.distance = intersect_sphere.first;
+			object.distance = intersect_sphere.distance;
+			object.hit_point = vec_add(camera, vec_mul_by(direct, object.distance));
 			object.center = app->scene.spheres[i].center;
+			object.normal = vector_sub(object.hit_point, object.center);
+			object.normal = (vec_normalize(object.normal));
 			object.color = app->scene.spheres[i].color;
 			object.specular = app->scene.spheres[i].specular;
-			object.object_type = 's';
-			//app->scene.cur_obj_type = 's';
-			object.flag = 1;
-		}
-		if (between(length_min, length_max, intersect_sphere.second) &&
-			intersect_sphere.second < object.distance)
-		{
-			object.distance = intersect_sphere.second;
-			object.center = app->scene.spheres[i].center;
-			object.color = app->scene.spheres[i].color;
-			object.specular = app->scene.spheres[i].specular;
-			object.object_type = 's';
-			//app->scene.cur_obj_type = 's';
 			object.flag = 1;
 		}
 	}

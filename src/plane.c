@@ -64,7 +64,8 @@ t_object	find_intersected_planes(t_app *app, t_vector camera, t_vector direct,
 			object.specular = app->scene.planes[i].specular;
 			//app->scene.cur_obj_type = 'p';
 			object.object_type = 'p';
-			object.plane_normal = app->scene.planes[i].normal;
+			object.hit_point = vec_add(camera, vec_mul_by(direct, object.distance));
+			object.normal = vec_invert(app->scene.planes[i].normal);
 			//vec_invert();
 			object.flag = 1;
 		}

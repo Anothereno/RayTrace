@@ -66,16 +66,34 @@ t_object_intersect	intersect_ray_cylinder(t_vector camera, t_vector direct, t_cy
 {
 	t_intersect abc;
 
-	abc = find_abc(camera, direct, cylinder);
+	abc.oc = vector_sub(camera, cylinder.center);
+	abc.a = vec_dot(direct, direct) - pow(vec_dot(direct, cylinder.axis), 2);
+	abc.b = (vec_dot(direct, abc.oc) - vec_dot(direct, cylinder.axis) * vec_dot(abc.oc, cylinder.axis)) * 2;
+	abc.c = vec_dot(abc.oc, abc.oc) - pow(vec_dot(abc.oc, cylinder.axis), 2) - cylinder.radius * cylinder.radius;
+	abc.delta = abc.b * abc.b - 4 * (abc.a * abc.c);
+	abc.b = -abc.b;
+	abc.a = abc.a * 2;
+
+//	abc = find_abc(camera, direct, cylinder);
 
 	if (fabs(abc.delta) < 0.001)
-		return (set_intersect(0, 999999, 999999));
-	else if (abc.delta == 0)
-		return (set_intersect(1,
-							  ((abc.b) + sqrt(abc.delta)) / abc.a, ((abc.b) - sqrt(abc.delta)) / abc.a));
+		return (set_intersect(999999, 999999));
 	else
-		return (set_intersect(2,
-							  ((abc.b) + sqrt(abc.delta)) / abc.a, ((abc.b) - sqrt(abc.delta)) / abc.a));
+		return (set_intersect(
+				((abc.b) + sqrt(abc.delta)) / abc.a, ((abc.b) - sqrt(abc.delta)) / abc.a));
+}
+
+void normal_cylinder(t_app *app, t_cylinder *cylinder, t_object *object)
+{
+	t_vector obj_cam;
+	double 		temp;
+
+	obj_cam = vector_sub(app->camera.camera, cylinder->center);
+	temp = vector_dot(app->camera.direct, cylinder->axis) * object->hit_point.distance +
+		   vector_dot(obj_cam, cylinder->axis);
+	object->normal = vector_sub(vector_sub(object->hit_point, cylinder->center),
+								vector_mult_scal(cylinder->axis, temp));
+	object->normal = vec_normalize(object->normal);
 }
 
 t_object	find_intersected_cylinders(t_app *app, t_vector camera, t_vector direct,
@@ -91,34 +109,20 @@ t_object	find_intersected_cylinders(t_app *app, t_vector camera, t_vector direct
 	while (++i < app->scene.cylinders_amount)
 	{
 		intersect_cylinder = intersect_ray_cylinder(camera, direct, app->scene.cylinders[i]);
-		if (between(length_min, length_max, intersect_cylinder.first) &&
-			intersect_cylinder.first < object.distance)
+		if (between(length_min, length_max, intersect_cylinder.distance) &&
+			intersect_cylinder.distance < object.distance)
 		{
-			object.distance = intersect_cylinder.first;
+			object.distance = intersect_cylinder.distance;
 			object.axis = app->scene.cylinders[i].axis;
 			object.center = app->scene.cylinders[i].center;
+			object.hit_point = vec_add(camera, vector_mult_scal(direct, object.distance));
+			normal_cylinder(app, &app->scene.cylinders[i], &object);
 			object.color = app->scene.cylinders[i].color;
 			object.specular = app->scene.cylinders[i].specular;
 			app->scene.cur_obj_type = 'y';
 
 			object.flag = 1;
 		}
-		if (between(length_min, length_max, intersect_cylinder.second) &&
-			intersect_cylinder.second < object.distance)
-		{
-			object.distance = intersect_cylinder.second;
-			object.axis = app->scene.cylinders[i].axis;
-			object.center = app->scene.cylinders[i].center;
-			object.color = app->scene.cylinders[i].color;
-			object.specular = app->scene.cylinders[i].specular;
-			app->scene.cur_obj_type = 'y';
-
-			object.flag = 1;
-		}
-		double r = camera.y + object.distance * direct.y;
-
-/*		if (!((r >= object.axis.y) && (r <= object.axis.y + app->scene.cylinders[i].height)))
-			object.flag = 0;*/
 	}
 	if (object.distance < prev_object.distance)
 		return (object);

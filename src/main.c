@@ -6,21 +6,6 @@ void	ft_error(char *str)
 	exit(0);
 }
 
-int		load_parser(t_app *app)
-{
-	int		fd;
-
-	if ((fd = open(app->cur_scene, O_RDONLY)) != -1)
-		if (map_read(fd, app))
-			return (1);
-		else
-		{
-			ft_error("Bad map.");
-			return (0);
-		}
-
-	return (1);
-}
 
 int	choose_scene(t_app *app, char **av)
 {
@@ -55,16 +40,18 @@ int	choose_scene(t_app *app, char **av)
 	return (1);
 }
 
-int		main(int ac, char **av)
+int		main(int argc, char **argv)
 {
 	t_app	*app;
 
-	if (ac != 2)
-		ft_error("Usage : ./RTv1  Configuration file not found");
+	if (argc != 2)
+		ft_error("Configuration file not found.\n"
+		   "Usage : ./RTv1  configuration_file.scene");
 	app = (t_app *)malloc(sizeof(t_app));
-    app->sdl = (t_sdl *)malloc(sizeof(t_sdl));
+	app->sdl = (t_sdl *)malloc(sizeof(t_sdl));
 	init_app(app);
-	if (choose_scene(app, av) && load_parser(app))
+	read_file(app, argc, argv);
+//	if (choose_scene(app, av) && load_parser(app))
 	{
 		start_the_game(app);
 	}

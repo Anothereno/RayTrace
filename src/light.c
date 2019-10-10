@@ -5,7 +5,7 @@ t_light		new_light(t_vector direct, double intensity, char type)
 	t_light res;
 
 	res.intensity = intensity;
-	res.direct = direct;
+	res.position = direct;
 	res.type = type;
 	return res;
 }

@@ -8,24 +8,38 @@
 # include <stdio.h>
 # include <string.h>
 # include <pthread.h>
+# include <../libft/get_next_line.h>
 # include <SDL.h>
 //# include <SDL_ttf.h>
 # define RAD 0.0174533f
-# define SCREEN_WIDTH 800
-# define SCREEN_HEIGHT 600
+# define SCREEN_WIDTH 400
+# define SCREEN_HEIGHT 400
 # define CENTER_WIDTH (SCREEN_WIDTH / 2)
 # define CENTER_HEIGHT (SCREEN_HEIGHT / 2)
-# define AMOUNT_SPHERES 0
-# define AMOUNT_CONES 0
+# define MAX(a, b) a > b ? a : b
+# define MIN(a, b) a > b ? b : a
+# define INF 9999999
+# define AMOUNT_SPHERES 1
+# define AMOUNT_CONES 1
 # define AMOUNT_PLANES 2
 # define AMOUNT_CYLINDERS 1
 # define AMOUNT_LIGHTS 2
 
-typedef struct s_vector
+typedef enum e_types
+{
+	sphere,
+	cone,
+	plane,
+	cylinder,
+	light
+}			t_types;
+
+typedef struct	s_vector
 {
     double		x;
     double		y;
 	double		z;
+    double		distance;
 }				t_vector;
 
 
@@ -65,11 +79,11 @@ typedef struct s_color
     int				blue;
 }				t_color;
 
-typedef struct s_light
+typedef struct	s_ligth
 {
-	char			type;
-	double			intensity;
-	t_vector		direct;
+	char		type;
+	double		intensity;
+	t_vector	position;
 }				t_light;
 
 typedef	struct		s_plane
@@ -77,17 +91,20 @@ typedef	struct		s_plane
 	t_vector		center;
 	t_vector		normal;
 	int 			specular;
+	float 			diffuse;
 	t_color			color;
 }					t_plane;
 
-typedef struct s_sphere
+typedef struct	s_sphere
 {
-    int 			mode;
-    t_vector		center;
-    double			radius;
-    t_color			color;
-    int				specular;
-    double 			reflective;
+    int 		mode;
+    t_vector	center;
+    double		radius;
+	float 			diffuse;
+
+	t_color		color;
+    int			specular;
+    double 		reflective;
 }				t_sphere;
 
 typedef struct	s_cone
@@ -96,6 +113,8 @@ typedef struct	s_cone
 	double			height;
 	t_vector		axis;
 	double			radius;
+	float 			diffuse;
+	double 			angle;
 	int				specular;
 	t_color			color;
 }					t_cone;
@@ -105,6 +124,8 @@ typedef struct	s_cylinder
 	t_vector		center;
 	t_vector		axis;
 	double			height;
+	float 			diffuse;
+
 	double			radius;
 	int				specular;
 	t_color			color;
@@ -117,36 +138,39 @@ typedef struct	s_object
 	t_vector	center;
 	t_vector	axis;
 	t_color		color;
-	int 		specular;
+	double 		specular;
 	double 		distance;
-	t_vector	plane_normal;
+	t_vector	normal;
+	t_vector	hit_point;
+	double		light_intensity;
+	double		diffuse;
 }				t_object;
 
 typedef struct s_rotate
 {
-	double			x;
-	double			y;
-	double			z;
+	double		x;
+	double		y;
+	double		z;
 }				t_rotate;
 
-typedef struct s_scene
+typedef struct	s_scene
 {
-	char 			cur_obj_type;
-    int				spheres_amount;
-    int				planes_amount;
-    int				cones_amount;
-    int				cylinders_amount;
-    int				cur_object;
-	t_sphere		*spheres;
-	t_cone			*cones;
-	t_cylinder		*cylinders;
-	t_plane			*planes;
-	t_light			*lights;
-	int				lights_amount;
-	int				cur_light_control;
-	int 			cur_obj_control;
-	double			light_speed;
-	t_rotate		rotate;
+	char 		cur_obj_type;
+    int			spheres_amount;
+    int			planes_amount;
+    int			cones_amount;
+    int			cylinders_amount;
+    int			cur_object;
+	t_sphere	*spheres;
+	t_cone		*cones;
+	t_cylinder	*cylinders;
+	t_plane		*planes;
+	t_light		*lights;
+	int			lights_amount;
+	int			cur_light_control;
+	int 		cur_obj_control;
+	double		light_speed;
+	t_rotate	rotate;
 }               t_scene;
 
 typedef struct	s_app
@@ -162,13 +186,10 @@ typedef struct	s_app
 
 typedef struct s_sphere_intersect
 {
-	int				intersect_amount;
-	double			first;
-	double			second;
-	t_sphere		intersected_object;
+	double 			distance;
 }				t_object_intersect;
 
-t_object_intersect intersect_ray_sphere(t_vector camera, t_vector direct,
+t_object_intersect	intersect_ray_sphere(t_vector camera, t_vector direct,
 										t_sphere sphere);
 void				initialize_sdl(t_app *app);
 void				init(t_app *app);
@@ -176,8 +197,9 @@ int					event_handling(t_app *app);
 void				set_pixel(SDL_Surface *surface, int x, int y, t_color c);
 void				init_app(t_app *app);
 
-t_color				raytrace(t_vector camera, t_vector direct,
-								double length_min, double length_max, t_app *app);
+void	read_file(t_app *app, int argc, char** argv);
+void	ft_error(char *str);
+t_color raytrace(double length_min, double length_max, t_app *app);
 t_vector 			set_vertex(double x, double y, double z);
 double				vector_dot(t_vector first, t_vector second);
 t_vector			vector_sub(t_vector first, t_vector second);
@@ -199,12 +221,12 @@ t_cone				new_cone(t_vector center, double radius, t_color color, double height,
 t_light				new_light(t_vector direct, double intensity, char type);
 
 
-void			vec_invert2(t_vector *v, t_vector *v2);
-void			vector_mult_scal2(t_vector *res,t_vector *first, double num);
-t_vector		set_vertex2(double *x, double *y, double *z);
-double vector_dot2(t_vector *first, t_vector *second);
+void				vec_invert2(t_vector *v, t_vector *v2);
+void				vector_mult_scal2(t_vector *res,t_vector *first, double num);
+t_vector			set_vertex2(double *x, double *y, double *z);
+double				vector_dot2(t_vector *first, t_vector *second);
 
-
+t_color				pallete(t_color color, double num);
 t_vector			vec_point_at(t_vector ori, t_vector dir, double t);
 double				clamp(int min, int max, int num);
 t_color 			set_color(int red, int green, int blue);
@@ -217,7 +239,7 @@ void				set_axis(t_vector *axis, t_vector rot);
 t_sphere 			new_sphere(t_vector center, double radius, t_color color, int specular);
 int					check_lights(const uint8_t *key, t_app *app);
 int					check_camera(const uint8_t *key, t_app *app);
-t_object_intersect	set_intersect(int amount, double first, double second);
+t_object_intersect set_intersect(double first, double second);
 int 				between(double min, double max, double num);
 t_object			find_intersected_cones(t_app *app, t_vector camera, t_vector direct,
 								   double length_min, double length_max, t_object prev_object);

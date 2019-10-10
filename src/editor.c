@@ -31,13 +31,13 @@ int		event_handling(t_app *app)
 	if (key[SDL_SCANCODE_2])
 		app->scene.cur_light_control = 1;
 	if (key[SDL_SCANCODE_KP_4])
-		app->scene.lights[app->scene.cur_light_control].direct.x -= 0.5f;
+		app->scene.lights[app->scene.cur_light_control].position.x -= 0.5f;
 	if (key[SDL_SCANCODE_KP_6])
-		app->scene.lights[app->scene.cur_light_control].direct.x += 0.5f;
+		app->scene.lights[app->scene.cur_light_control].position.x += 0.5f;
 	if (key[SDL_SCANCODE_KP_2])
-		app->scene.lights[app->scene.cur_light_control].direct.z -= 0.5f;
+		app->scene.lights[app->scene.cur_light_control].position.z -= 0.5f;
 	if (key[SDL_SCANCODE_KP_8])
-		app->scene.lights[app->scene.cur_light_control].direct.z += 0.5f;
+		app->scene.lights[app->scene.cur_light_control].position.z += 0.5f;
 	if (key[SDL_SCANCODE_KP_PLUS])
 		app->scene.lights[app->scene.cur_light_control].intensity += 0.1f;
 	if (key[SDL_SCANCODE_KP_MINUS])
@@ -58,12 +58,6 @@ int		event_handling2(t_app *app)
 	a = check_camera(key, app);
 	a += check_lights(key, app);
 	if (a)
-	{
 		redraw(app);
-//		printf("light.x - %f, light.y - %f, light.z - %f\n", app->scene.lights[app->scene.cur_light_control].direct.x,
-//			   app->scene.lights[app->scene.cur_light_control].direct.y,
-//		app->scene.lights[app->scene.cur_light_control].direct.z);
-	}
-//	SDL_WaitEvent(&app->sdl->event);
 	return (1);
 }

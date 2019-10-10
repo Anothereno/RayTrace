@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   fractol.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/07 17:22:21 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/08 12:27:41 by ndremora         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "RTv1.h"
 
 t_vector set_vertex(double x, double y, double z)
@@ -78,13 +66,16 @@ void	vector_mult_scal2(t_vector *res,t_vector *first, double num)
 	res->z = first->z * num;
 }
 
-t_object_intersect set_intersect(int amount, double first, double second)
+t_object_intersect set_intersect(double first, double second)
 {
 	t_object_intersect res;
 
-	res.intersect_amount = amount;
-	res.first = first;
-	res.second = second;
+
+	if (first < 0)
+		first = second;
+	if (first < 0)
+		res.distance = INF;
+	res.distance = MIN(first, second);
 	return (res);
 }
 
@@ -135,20 +126,68 @@ int 	between(double min, double max, double num)
 	return (0);
 }
 
-double 	light_calculate(t_vector plane, t_vector normal, t_app *app, int specular)
+t_vector	reflective(t_vector vector, t_vector normal)
+{
+	t_vector res;
+
+	res = vector_sub(vector, vector_mult_scal(vector_mult_scal(normal, vector_dot(vector, normal)), 2));
+	return res;
+}
+
+void light_calculate(t_app *app, t_object *object)
+{
+	double		result_intens;
+	t_vector	light_direct;
+	double 		diffuse;
+	double		light_intensity;
+	t_vector	R;
+	t_vector	V;
+	t_object	hit;
+	double		max;
+	double		light_distance;
+	t_vector	sub;
+	int			i;
+	double		dot;
+	double		rot;
+
+	i = -1;
+	object->diffuse = 0.1;
+	object->specular = 0;
+	while (++i < app->scene.lights_amount)
+	{
+		sub = vector_sub(app->scene.lights[i].position, object->hit_point);
+		light_direct = vec_normalize(sub);
+		light_distance = vector_length(sub);
+		hit = find_intersected_spheres(app, object->hit_point, light_direct, 0.001f, INF);
+		hit = find_intersected_cones(app, object->hit_point, light_direct, 0.001f, INF, hit);
+		hit = find_intersected_cylinders(app, object->hit_point, light_direct, 0.001f, INF, hit);
+
+		if (hit.flag != 0 && hit.distance < light_distance)
+			continue;
+		dot = MAX(0, vector_dot(light_direct, object->normal));
+		light_intensity = app->scene.lights[i].intensity * 200;
+		light_intensity /= M_PI * pow(light_distance, 2.0);
+		object->diffuse += light_intensity * dot;
+		object->specular += pow(MAX(0, vector_dot(
+				vec_invert(reflective(vec_invert(light_direct),
+						object->normal)), app->camera.direct)), 300) * light_intensity;
+	}
+}
+
+double 	 light_calculate2(t_vector plane, t_vector normal, t_app *app, int specular, t_object object)
 {
 	double		res;
 	t_vector	L;
 	t_vector	R;
 	t_vector	V;
-	t_object	object;
+	t_object	object2;
 	double		max;
 	int			i;
 	double		dot;
 	double		rot;
 
 	i = -1;
-	res = 0.0f;
+	res = 0.0;
 	while (++i < app->scene.lights_amount)
 	{
 		if (app->scene.lights[i].type == 'a')
@@ -157,21 +196,25 @@ double 	light_calculate(t_vector plane, t_vector normal, t_app *app, int specula
 		{
 			if (app->scene.lights[i].type == 'p')
 			{
-				L = vector_sub(app->scene.lights[i].direct, plane);
+				L = vector_sub(app->scene.lights[i].position, plane);
 				max = 1;
 			}
 			else
 			{
-				L = app->scene.lights[i].direct;
+				L = app->scene.lights[i].position;
 				max = 999999;
 			}
-			object = find_intersected_spheres(app, plane, L, 0.001f, max);
+			L = vec_normalize(L);
+			//if (object.object_type == 's')
+				object = find_intersected_spheres(app, plane, L, 0.001f, max);
+			//if (object.object_type == 'p')
+			//	object = find_intersected_spheres(app, plane, L, 0.001f, max);
 			if (object.flag != 0)
 				continue;
 			dot = vector_dot(normal, L);
 			if (dot > 0)
-				res += app->scene.lights[i].intensity * dot /
-						(vector_length(normal) * vector_length2(&L));
+				res += app->scene.lights[i].intensity * dot / (vector_length(normal) * vector_length2(&L));
+				//res += 24 / (vector_length(normal) * vector_length2(&L));
 			if(specular != -1)
 			{
 				vec_invert2(&V, &app->camera.direct);
@@ -197,21 +240,37 @@ t_color pallete(t_color color, double num)
 	return (res);
 }
 
-t_color raytrace(t_vector camera, t_vector direct,
-				 double length_min, double length_max, t_app *app)
+void	vector_inverse(t_vector *normal)
 {
-	t_vector	plane;
-	t_vector	normal;
+	normal->x = -normal->x;
+	normal->y = -normal->y;
+	normal->z = -normal->z;
+}
+
+void	sum_color(t_color *first, t_color second)
+{
+	first->red += second.red;
+	first->blue += second.blue;
+	first->green += second.green;
+	*first = set_color(first->red, first->green, first->blue);
+}
+
+t_color raytrace(double length_min, double length_max, t_app *app)
+{
+	t_color	pixel_color;
+	t_color	temp_color;
 	t_object	object;
 
+
 	object = find_intersected_spheres(app, app->camera.camera, app->camera.direct, length_min, length_max);
-	object = find_intersected_planes(app, app->camera.camera, app->camera.direct, length_min, length_max, object);
 	object = find_intersected_cylinders(app, app->camera.camera, app->camera.direct, length_min, length_max, object);
 	object = find_intersected_cones(app, app->camera.camera, app->camera.direct, length_min, length_max, object);
+	object = find_intersected_planes(app, app->camera.camera, app->camera.direct, length_min, length_max, object);
 	if (!object.flag)
 		return (set_color(0, 0, 0));
-	plane = vector_add(camera, vector_dot_scalar(direct, object.distance));
-	normal = vector_sub(plane, object.center);
-	normal = vector_div_scal(normal, vector_length(normal));
-	return pallete(object.color, light_calculate(plane, normal, app, object.specular));
+	light_calculate(app, &object);
+	pixel_color = pallete(object.color, object.diffuse);
+	temp_color = pallete(set_color(255, 255, 255), object.specular);
+	sum_color(&pixel_color, temp_color);
+	return (pixel_color);
 }
