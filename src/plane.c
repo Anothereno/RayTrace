@@ -1,13 +1,13 @@
 #include "RTv1.h"
 
-t_plane new_plane(t_vector center, t_vector normal, t_color color, int specular)
+t_plane new_plane(t_vector center, t_vector normal)
 {
 	t_plane	res;
 
 	res.center = center;
 	res.normal = normal;
-	res.color = color;
-	res.specular = specular;
+	res.color = color_randomize();
+	res.specular = rand() % 1000;
 	return (res);
 }
 

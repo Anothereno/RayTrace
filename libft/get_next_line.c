@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/19 13:49:21 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/01/19 14:03:07 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/11 20:53:17 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static int	returner(char **string, char **line)
 {
 	char	*delim;
 	int		flag;
+	char 	*tmp;
 
 	flag = 0;
 	delim = NULL;
@@ -27,7 +28,11 @@ static int	returner(char **string, char **line)
 	*line = *string;
 	*string = ft_strdup("");
 	if (delim && ft_strlen(delim))
+	{
+		free(*string);
 		*string = ft_strdup(delim);
+	}
+
 	if ((*line && ft_strcmp(*line, "")) ||
 		(*line && !ft_strcmp(*line, "") && flag))
 		return (1);
@@ -64,7 +69,10 @@ int			get_next_line(const int fd, char **line)
 	if (!str[fd])
 		str[fd] = ft_strdup("");
 	if (ft_solve(fd, &str[fd], line))
+	{
+//		free(&str[fd]);
 		return (1);
+	}
 	else
 		return (0);
 }

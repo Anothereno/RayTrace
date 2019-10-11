@@ -1,13 +1,13 @@
 #include "RTv1.h"
 
-t_sphere new_sphere(t_vector center, double radius, t_color color, int specular)
+t_sphere new_sphere(t_vector center, double radius)
 {
 	t_sphere	res;
 
 	res.center = center;
 	res.radius = radius;
-	res.color = color;
-	res.specular = specular;
+	res.color = color_randomize();
+	res.specular = rand() % 1000;
 	return (res);
 }
 

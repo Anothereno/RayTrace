@@ -174,60 +174,34 @@ void light_calculate(t_app *app, t_object *object)
 	}
 }
 
-double 	 light_calculate2(t_vector plane, t_vector normal, t_app *app, int specular, t_object object)
-{
-	double		res;
-	t_vector	L;
-	t_vector	R;
-	t_vector	V;
-	t_object	object2;
-	double		max;
-	int			i;
-	double		dot;
-	double		rot;
 
-	i = -1;
-	res = 0.0;
-	while (++i < app->scene.lights_amount)
-	{
-		if (app->scene.lights[i].type == 'a')
-			res += app->scene.lights[i].intensity;
-		else
-		{
-			if (app->scene.lights[i].type == 'p')
-			{
-				L = vector_sub(app->scene.lights[i].position, plane);
-				max = 1;
-			}
-			else
-			{
-				L = app->scene.lights[i].position;
-				max = 999999;
-			}
-			L = vec_normalize(L);
-			//if (object.object_type == 's')
-				object = find_intersected_spheres(app, plane, L, 0.001f, max);
-			//if (object.object_type == 'p')
-			//	object = find_intersected_spheres(app, plane, L, 0.001f, max);
-			if (object.flag != 0)
-				continue;
-			dot = vector_dot(normal, L);
-			if (dot > 0)
-				res += app->scene.lights[i].intensity * dot / (vector_length(normal) * vector_length2(&L));
-				//res += 24 / (vector_length(normal) * vector_length2(&L));
-			if(specular != -1)
-			{
-				vec_invert2(&V, &app->camera.direct);
-				vector_mult_scal2(&R ,&normal, 2);
-				vector_mult_scal2(&R ,&R, dot);
-				vector_sub3(&R, &R, &L);
-				rot = vector_dot2(&R, &V);
-				if (rot > 0)
-					res += app->scene.lights[i].intensity * pow(rot / (vector_length2(&R) * vector_length2(&V)), specular);
-			}
-		}
-	}
-	return (res);
+t_color	to_hsv(int rand_num)
+{
+	t_color color;
+	double	calc_color;
+
+	calc_color = (1 - fabs(fmod(rand_num / 60.0, 2) - 1)) * 255;
+	if (rand_num >= 0 && rand_num < 60)
+		color = set_color(255, calc_color, 0);
+	else if (rand_num >= 60 && rand_num < 120)
+		color = set_color(calc_color, 255, 0);
+	else if (rand_num >= 120 && rand_num < 180)
+		color = set_color(0, 255, calc_color);
+	else if (rand_num >= 180 && rand_num < 240)
+		color = set_color(0, calc_color, 255);
+	else if (rand_num >= 240 && rand_num < 300)
+		color = set_color(calc_color, 0, 255);
+	else
+		color = set_color(255, 0, calc_color);
+	return(color);
+}
+
+t_color	color_randomize()
+{
+	t_color color;
+
+	color = to_hsv(rand() % 360);
+	return (color);
 }
 
 t_color pallete(t_color color, double num)

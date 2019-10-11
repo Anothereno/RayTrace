@@ -1,44 +1,15 @@
 #include "RTv1.h"
 
-t_cone	new_cone(t_vector center, double radius, t_color color, double height, int specular, t_vector rot)
+t_cone new_cone(t_vector center, double angle, t_vector rot)
 {
 	t_cone	res;
 
 	res.center = center;
-	res.radius = radius;
-	res.color = color;
-	res.height = height;
-	res.specular = specular;
+	res.angle = angle * RAD;
+	res.color = color_randomize();
+	res.specular = rand() % 1000;
 	set_axis(&res.axis, rot);
 	return (res);
-}
-
-t_object_intersect	intersect_ray_cone2(t_vector camera, t_vector direct, t_cone cone)
-{
-
-	double A;
-	double B;
-	double D;
-
-	double a;
-	double b;
-	double c;
-
-	A = camera.x - cone.center.x;
-	B = camera.z - cone.center.z;
-	D = cone.height - camera.y + cone.center.y;
-
-	double tan = (cone.radius / cone.height) * (cone.radius / cone.height);
-	a = (direct.x * direct.x) + (direct.z * direct.z) - (tan * (direct.y * direct.y));
-	b = (2 * A * direct.x) + (2 * B * direct.z) + (2 * tan * D * direct.y);
-	c = (A * A) + (B * B) - (tan * (D * D));
-
-	double delta = b * b - 4 * (a * c);
-	if (fabs(delta) < 0.001)
-		return (set_intersect(INF, INF));
-	else
-		return (set_intersect(((-b) + sqrt(delta)) / (2 * a),
-				((-b) - sqrt(delta)) / (2 * a)));
 }
 
 t_object_intersect	     intersect_ray_cone(t_vector camera, t_vector direct, t_cone cone)

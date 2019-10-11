@@ -1,0 +1,14 @@
+camera 0 0 10 0 0 0
+sphere -4 0 2 1
+sphere 0 0 2 2
+sphere 6 0 2 3
+cone 3 2 -2 43 0 0 40
+cone -3 2 -2 11 0 0 40
+cone 0 0 0 0 14 45 15
+cone 0 0 0 0 26 -45 15
+plane 0 -3 0 0 0 0
+plane 0 0 -10 90 0 0
+cylinder 3 2 -2 2 0 0 1
+cylinder -3 2 -2 1 0 0 1
+light -6 -1 7 1
+light -7 -1 7 1

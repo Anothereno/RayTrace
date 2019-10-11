@@ -21,15 +21,14 @@ void	set_axis(t_vector *axis, t_vector rot)
 	*axis = vec_normalize(tmp_1);
 }
 
-t_cylinder new_cylinder(t_vector axis, double radius, t_color color, double height, int specular, t_vector rot)
+t_cylinder new_cylinder(t_vector center, double radius, t_vector rot)
 {
 	t_cylinder	res;
 
-	res.axis = axis;
+	res.center = center;
 	res.radius = radius;
-	res.color = color;
-	res.height = height;
-	res.specular = specular;
+	res.color = color_randomize();
+	res.specular = rand() % 1000;
 	set_axis(&res.axis, rot);
 	return (res);
 }

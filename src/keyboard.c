@@ -80,7 +80,7 @@ int		check_lights(const uint8_t *key, t_app *app)
 	}
 	if (key[SDL_SCANCODE_2])
 	{
-		if (app->scene.cur_light_control + 1 < AMOUNT_LIGHTS)
+		if (app->scene.cur_light_control + 1 < app->scene.lights_amount)
 		{
 			app->scene.cur_light_control++;
 			a = 1;
