@@ -184,7 +184,7 @@ void raytrace(t_app *app, int x, int y)
 	}
 	light_calculate(app, &object, &camera);
 	pixel_color = pallete(object.color, object.diffuse);
-	temp_color = pallete(set_color(255, 255, 255), object.specular);
+	temp_color = pallete(app->white, object.specular);
 	sum_color(&pixel_color, &temp_color);
 	set_pixel(app->sdl->surface, x, y, pixel_color);
 

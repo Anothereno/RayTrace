@@ -8,12 +8,12 @@
 # include <stdio.h>
 # include <string.h>
 # include <pthread.h>
-# include <../libft/get_next_line.h>
+# include "../libft/get_next_line.h"
 # include <SDL.h>
 //# include <SDL_ttf.h>
 # define RAD 0.0174533f
-# define SCREEN_WIDTH 800
-# define SCREEN_HEIGHT 600
+# define SCREEN_WIDTH 400
+# define SCREEN_HEIGHT 400
 # define MAX(a, b) a > b ? a : b
 # define MIN(a, b) a > b ? b : a
 # define INF 9999999
@@ -209,7 +209,6 @@ void				read_file_write_obj(t_app *app, char** argv);
 double				intersect_ray_sphere(t_vector camera, t_vector direct, t_sphere sphere);
 void				initialize_sdl(t_app *app);
 void				init(t_app *app);
-int					event_handling(t_app *app);
 void set_pixel(SDL_Surface *surface, int x, int y, t_color c);
 void				init_app(t_app *app);
 
@@ -248,14 +247,14 @@ t_vector			vec_point_at(t_vector ori, t_vector dir, double t);
 double				clamp(int min, int max, int num);
 t_color 			set_color(int red, int green, int blue);
 void				start_the_game(t_app *app);
-int					event_handling2(t_app *app);
+int					event_handling(t_app *app);
 double				vector_length(t_vector vector);
 void				redraw(t_app *app);
 
 void				set_axis(t_vector *axis, t_vector rot);
 t_sphere new_sphere(t_vector center, double radius);
-int					check_lights(const uint8_t *key, t_app *app);
-int					check_camera(const uint8_t *key, t_app *app);
+void				check_lights(const uint8_t *key, t_app *app);
+void				check_camera(const uint8_t *key, t_app *app);
 double				set_intersect(double first, double second);
 int 				between(double min, double max, double num);
 t_object			find_intersected_cones(t_app *app, t_vector camera, t_vector direct, double length_min, t_object prev_object);
@@ -266,6 +265,7 @@ int					map_read(int fd, t_app *app);
 void				set_pixel2(t_app *app, int x, int y, t_color c);
 t_color				to_hsv(int rand_num);
 void				sum_color(t_color *first, t_color *second);
+void				check_for_redraw(const uint8_t *key, t_app *app);
 
 
 

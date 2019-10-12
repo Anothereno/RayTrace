@@ -3,76 +3,78 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ndremora <ndremora@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/01/19 13:49:21 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/12 18:27:52 by hdwarven         ###   ########.fr       */
+/*   Created: 2019/01/06 13:25:46 by ndremora          #+#    #+#             */
+/*   Updated: 2019/10/12 18:33:55 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static int	returner(char **string, char **line)
+static	int	ft_find_next_line(char **str, char **line)
 {
-	char	*delim;
-	int		flag;
-	char 	*tmp;
-
-	flag = 0;
-	delim = NULL;
-	if (*string && (delim = ft_strchr(*string, '\n')) && ++flag)
+	char	*cur;
+	if (*str && (cur = ft_strchr(*str, '\n')))
 	{
-		*delim = '\0';
-		delim++;
-	}
-	*line = *string;
-	*string = ft_strdup("");
-	tmp = *string;
-	if (delim && ft_strlen(delim))
-	{
-		free(*string);
-		*string = ft_strdup(delim);
-	}
-	if ((*line && ft_strcmp(*line, "")) ||
-		(*line && !ft_strcmp(*line, "") && flag))
+		*cur = '\0';
+		*line = ft_strdup(*str);
+		*str = ft_strcpy(*str, cur + 1);
 		return (1);
-	return (0);
+	}
+	else
+	{
+		if (*str)
+		{
+			*line = ft_strdup(*str);
+			ft_strdel(str);
+			if (*line && ft_strcmp(*line, ""))
+				return (1);
+			return (0);
+		}
+		return (0);
+	}
 }
 
-static int	ft_solve(int fd, char **string, char **line)
+static	int	ft_read(int fd, char **str, char **line)
 {
-	char	tmp[BUFF_SIZE + 1];
-	int		i;
-	char	*cur;
+	char	newstr[BUFF_SIZE + 1];
+	char	*tmp;
+	int		ret;
+	char	*tmp2;
 
-	while ((i = read(fd, tmp, BUFF_SIZE)))
+	while ((ret = read(fd, newstr, BUFF_SIZE)) > 0)
 	{
-		tmp[i] = '\0';
-		cur = *string;
-		*string = ft_strjoin(*string, tmp);
-		free(cur);
-		if (ft_strchr(tmp, '\n'))
-			break ;
+		newstr[ret] = '\0';
+		if (!*str)
+			*str = ft_strdup(newstr);
+		else
+		{
+			tmp = *str;
+			*str = ft_strjoin(*str, newstr);
+			ft_strdel(&tmp);
+		}
+		if ((tmp2 = ft_strchr(*str, '\n')))
+			if (ft_find_next_line(str, line) == 1)
+				return (1);
 	}
-	if (returner(string, line))
+	if (ft_find_next_line(str, line) == 1)
 		return (1);
-	return (0);
+	return (ret);
 }
 
 int			get_next_line(const int fd, char **line)
 {
-	static char *str[65000];
+	static	char	*str[65000];
+	int				a;
 
-	if (fd < 0 || line == NULL || (read(fd, NULL, 0) < 0) ||
-		BUFF_SIZE <= 0)
+	if (!line || fd < 0 || BUFF_SIZE < 1 || (read(fd, NULL, 0) < 0))
 		return (-1);
-	if (!str[fd])
-		str[fd] = ft_strdup("");
-	if (ft_solve(fd, &str[fd], line))
-	{
-//		free(&str[fd]);
+	a = ft_read(fd, &str[fd], line);
+	if (a < 0)
+		return (-1);
+	if (a)
 		return (1);
-	}
 	else
 		return (0);
 }

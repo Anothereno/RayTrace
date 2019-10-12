@@ -34,14 +34,27 @@ t_vector rotation_y(t_camera *camera, t_vector viewport)
 	return (res);
 }
 
+void	quit(t_app *app)
+{
+	SDL_FreeSurface(app->sdl->surface);
+	SDL_DestroyWindow(app->sdl->window);
+	SDL_Quit();
+	free(app->sdl);
+	free(app->scene.lights);
+	free(app->scene.cylinders);
+	free(app->scene.cones);
+	free(app->scene.spheres);
+	free(app->scene.planes);
+	free(app);
+}
+
 void	start_the_game(t_app *app)
 {
 	redraw(app);
 	while (1)
-		if (!event_handling2(app))
+		if (!event_handling(app))
 			break;
-	SDL_Quit();
-	SDL_DestroyWindow(app->sdl->window);
+	quit(app);
 }
 
 void	*draw_thread(void *thread_info)
@@ -49,62 +62,34 @@ void	*draw_thread(void *thread_info)
 	int x;
 	int y;
 	t_thread thread;
-	t_app	*app;
 
 	thread = *(t_thread*)thread_info;
-	//pthread_mutex_lock(&thread.app->locker);
-	app = thread.app;
 	y = thread.y_start - 1;
 	while (++y < thread.y_finish)
 	{
 		x = -1;
 		while (++x < SCREEN_WIDTH)
-			raytrace(app, x, y);
+			raytrace(thread.app, x, y);
 	}
 	return (NULL);
 }
 
 void	redraw(t_app *app)
 {
-	t_thread	*threads_info;
-	pthread_t	*threads_array;
+	t_thread	threads_info[THREAD_AMOUNT];
 	int			i;
-	int x;
-	int y;
-	t_color color;
 
-	threads_info = (t_thread*)malloc(sizeof(t_thread) * THREAD_AMOUNT);
-//	threads_array = (pthread_t*)malloc(sizeof(pthread_t) * THREAD_AMOUNT);
-/*	if (pthread_mutex_init(&app->locker, NULL))
-		ft_error("MUTEX BROKE");*/
-	i = 0;
-	while (i < THREAD_AMOUNT)
+	i = -1;
+	while (++i < THREAD_AMOUNT)
 	{
 		threads_info[i].y_start = i * (SCREEN_HEIGHT / THREAD_AMOUNT);
 		threads_info[i].y_finish = (i + 1) * (SCREEN_HEIGHT / THREAD_AMOUNT);
-//		threads_info[i].x_start = i * (SCREEN_WIDTH / THREAD_AMOUNT);
-//		threads_info[i].x_finish = (i + 3) * (SCREEN_WIDTH / THREAD_AMOUNT);
 		threads_info[i].app = app;
 		if (pthread_create(&threads_info[i].pthread, NULL, draw_thread, &threads_info[i]))
 			ft_error("Threads was crashed");
-		i++;
 	}
-	i = -1;/**/
+	i = -1;
 	while (++i < THREAD_AMOUNT)
 		pthread_join(threads_info[i].pthread, NULL);
-//		i++;
-	free(threads_info);
-//	y = -1;
-//	while (++y < SCREEN_HEIGHT)
-//	{
-//		x = -1;
-//		while (++x < SCREEN_WIDTH)
-//		{
-//			app->scene.cur_object = 0;
-//			app->camera.direct = vec_normalize(rotation_y(&app->camera, to_viewport(x, y)));
-//			color = raytrace(1, INF, app);
-//			set_pixel(app->sdl->surface, x, y, color);
-//		}
-//	}
 	SDL_UpdateWindowSurface(app->sdl->window);
 }

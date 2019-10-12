@@ -16,7 +16,6 @@ void	init_objects(t_scene *scene)
 
 void	init_app(t_app *app)
 {
-
 	app->sdl->width = SCREEN_WIDTH;
 	app->sdl->height = SCREEN_HEIGHT;
 	SDL_Error(SDL_Init(SDL_INIT_VIDEO));
@@ -25,10 +24,10 @@ void	init_app(t_app *app)
 	app->sdl->surface = SDL_GetWindowSurface(app->sdl->window);
 	app->sdl->keys = SDL_GetKeyboardState(NULL);
 	app->camera.rotate_angle_y = 0;
-	app->camera.camera_speed = 3.0f;
-	app->camera.rotate_speed = 4.0f;
+	app->camera.camera_speed = 3;
+	app->camera.rotate_speed = 3.5;
 	ft_bzero(&app->scene, sizeof(app->scene));
-	app->scene.light_speed = 0.5f;
+	app->scene.light_speed = 0.5;
 	app->black = set_color(0, 0 ,0);
 	app->white = set_color(255, 255,255);
 	srand(time(0));
