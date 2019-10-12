@@ -19,8 +19,7 @@
 # define MAX(a, b) a > b ? a : b
 # define MIN(a, b) a > b ? b : a
 # define INF 9999999
-# define AMOUNT_LIGHTS 2
-# define THREAD_AMOUNT 16
+# define THREAD_AMOUNT 1
 
 
 typedef enum e_types
@@ -66,6 +65,8 @@ typedef struct s_camera
 	t_vector		camera;
 	t_vector		direct;
 	double 			rotate_angle_y;
+	double 			rotate_angle_x;
+	double 			rotate_angle_z;
 	double			camera_speed;
 	double 			rotate_speed;
 }				t_camera;
@@ -97,8 +98,7 @@ typedef struct	s_sphere
     int 		mode;
     t_vector	center;
     double		radius;
-	float 			diffuse;
-
+	float 		diffuse;
 	t_color		color;
     int			specular;
     double 		reflective;
@@ -121,7 +121,6 @@ typedef struct	s_cylinder
 	t_vector		axis;
 	double			height;
 	float 			diffuse;
-
 	double			radius;
 	int				specular;
 	t_color			color;
@@ -189,11 +188,13 @@ typedef struct	s_app
 
 typedef struct		s_thread
 {
-	int		id;
-	int		y_start;
-	pthread_t pthread;
-	int		y_finish;
-	t_app	*app;
+	int				id;
+	int				y_start;
+	int				x_start;
+	int 			x_finish;
+	pthread_t		pthread;
+	int				y_finish;
+	t_app			*app;
 }					t_thread;
 
 typedef struct s_sphere_intersect
@@ -202,9 +203,8 @@ typedef struct s_sphere_intersect
 }				t_object_intersect;
 
 t_color				color_randomize();
-void				read_file_write_obj(t_app *app, int argc, char** argv);
-t_object_intersect	intersect_ray_sphere(t_vector camera, t_vector direct,
-										t_sphere sphere);
+void				read_file_write_obj(t_app *app, char** argv);
+double				intersect_ray_sphere(t_vector camera, t_vector direct, t_sphere sphere);
 void				initialize_sdl(t_app *app);
 void				init(t_app *app);
 int					event_handling(t_app *app);
@@ -212,9 +212,9 @@ void				set_pixel(SDL_Surface *surface, int x, int y, t_color c);
 void				init_app(t_app *app);
 
 void				init_objects(t_scene *scene);
-void				read_file_count_obj(t_app *app, int argc, char** argv);
+void				read_file_count_obj(t_app *app, char** argv);
 void				ft_error(char *str);
-t_color				raytrace(double length_min, double length_max, t_app *app);
+t_color				raytrace(t_app *app);
 t_vector 			set_vertex(double x, double y, double z);
 double				vector_dot(t_vector first, t_vector second);
 t_vector			vector_sub(t_vector first, t_vector second);
@@ -254,17 +254,17 @@ void				set_axis(t_vector *axis, t_vector rot);
 t_sphere new_sphere(t_vector center, double radius);
 int					check_lights(const uint8_t *key, t_app *app);
 int					check_camera(const uint8_t *key, t_app *app);
-t_object_intersect set_intersect(double first, double second);
+double				set_intersect(double first, double second);
 int 				between(double min, double max, double num);
-t_object			find_intersected_cones(t_app *app, t_vector camera, t_vector direct,
-								   double length_min, double length_max, t_object prev_object);
-t_object			find_intersected_cylinders(t_app *app, t_vector camera, t_vector direct,
-									   double length_min, double length_max, t_object prev_object);
-t_object			find_intersected_planes(t_app *app, t_vector camera, t_vector direct,
-									double length_min, double length_max, t_object prev_object);
-t_object			find_intersected_spheres(t_app *app, t_vector camera, t_vector direct,
-									 double length_min, double length_max);
+t_object			find_intersected_cones(t_app *app, t_vector camera, t_vector direct, double length_min, t_object prev_object);
+t_object			find_intersected_cylinders(t_app *app, t_vector camera, t_vector direct, double length_min, t_object prev_object);
+t_object			find_intersected_planes(t_app *app, t_vector camera, t_vector direct,  t_object prev_object);
+t_object			find_intersected_spheres(t_app *app, t_vector camera, t_vector direct, double length_min);
 int					map_read(int fd, t_app *app);
+void				set_pixel2(t_app *app, int x, int y, t_color c);
+t_color				to_hsv(int rand_num);
+void				sum_color(t_color *first, t_color *second);
+
 
 
 #endif

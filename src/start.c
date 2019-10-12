@@ -53,7 +53,7 @@ void	*draw_thread(void *thread_info)
 	t_color color;
 
 	thread = *(t_thread*)thread_info;
-//	pthread_mutex_lock(&thread.app->locker);
+	//pthread_mutex_lock(&thread.app->locker);
 	app = thread.app;
 	y = thread.y_start - 1;
 	while (++y < thread.y_finish)
@@ -65,9 +65,9 @@ void	*draw_thread(void *thread_info)
 			app->camera.direct =
 					vec_normalize(rotation_y(&app->camera,
 							to_viewport(x, y)));
-			color = raytrace(1, INF, app);
-
+			color = raytrace(app);
 			set_pixel(app->sdl->surface, x, y, color);
+			//set_pixel2(app, x, y, color);
 		}
 	}
 //	pthread_mutex_unlock(&thread.app->locker);
@@ -85,13 +85,15 @@ void	redraw(t_app *app)
 
 	threads_info = (t_thread*)malloc(sizeof(t_thread) * THREAD_AMOUNT);
 //	threads_array = (pthread_t*)malloc(sizeof(pthread_t) * THREAD_AMOUNT);
-	if (pthread_mutex_init(&app->locker, NULL))
-		ft_error("MUTEX BROKE");
+/*	if (pthread_mutex_init(&app->locker, NULL))
+		ft_error("MUTEX BROKE");*/
 	i = 0;
 	while (i < THREAD_AMOUNT)
 	{
 		threads_info[i].y_start = i * (SCREEN_HEIGHT / THREAD_AMOUNT);
 		threads_info[i].y_finish = (i + 1) * (SCREEN_HEIGHT / THREAD_AMOUNT);
+		//threads_info[i].x_start = i * (SCREEN_WIDTH / THREAD_AMOUNT);
+		//threads_info[i].x_finish = (i + 2) * (SCREEN_WIDTH / THREAD_AMOUNT);
 		threads_info[i].app = app;
 		if (pthread_create(&threads_info[i].pthread, NULL, draw_thread, &threads_info[i]))
 			ft_error("Threads was crashed");

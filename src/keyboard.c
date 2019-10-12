@@ -4,7 +4,7 @@
 int		check_camera(const uint8_t *key, t_app *app)
 {
 	int a = 0;
-	float angle;
+	double angle;
 
 	if (key[SDL_SCANCODE_Q])
 	{
@@ -66,6 +66,8 @@ int		check_camera(const uint8_t *key, t_app *app)
 	}
 	return (a);
 }
+
+
 
 int		check_lights(const uint8_t *key, t_app *app)
 {

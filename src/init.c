@@ -24,23 +24,11 @@ void	init_app(t_app *app)
 			SCREEN_WIDTH, SCREEN_HEIGHT, 0);
 	app->sdl->surface = SDL_GetWindowSurface(app->sdl->window);
 	app->sdl->keys = SDL_GetKeyboardState(NULL);
-	app->scene.cur_light_control = 0;
 	app->camera.rotate_angle_y = 0;
 	app->camera.camera_speed = 3.0f;
 	app->camera.rotate_speed = 4.0f;
+	ft_bzero(&app->scene, sizeof(app->scene));
 	app->scene.light_speed = 0.5f;
 
-	app->scene.lights_amount = 0;
-	app->scene.spheres_amount = 0;
-	app->scene.cones_amount = 0;
-	app->scene.cylinders_amount = 0;
-	app->scene.planes_amount = 0;
-	app->scene.cameras_amount = 0;
-	app->scene.cur_light = 0;
-	app->scene.cur_sphere = 0;
-	app->scene.cur_cone = 0;
-	app->scene.cur_cylinder = 0;
-	app->scene.cur_plane = 0;
-	app->scene.cur_camera = 0;
 	srand(time(0));
 }

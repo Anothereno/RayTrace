@@ -40,23 +40,21 @@ int	choose_scene(t_app *app, char **av)
 	return (1);
 }
 
+
 int		main(int argc, char **argv)
 {
 	t_app	*app;
 
 //	getchar();
 	if (argc != 2)
-		ft_error("Configuration file not found.\n"
+		ft_error("No arguments passed.\n"
 		   "Usage : ./RTv1  configuration_file.scene");
 	app = (t_app *)malloc(sizeof(t_app));
 	app->sdl = (t_sdl *)malloc(sizeof(t_sdl));
 	init_app(app);
-	read_file_count_obj(app, argc, argv);
-	read_file_write_obj(app, argc, argv);
-//	if (choose_scene(app, av) && load_parser(app))
-	{
-		start_the_game(app);
-	}
+	read_file_count_obj(app, argv);
+	read_file_write_obj(app, argv);
+	start_the_game(app);
 
 	return 0;
 }

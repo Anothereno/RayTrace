@@ -1,6 +1,6 @@
 #include "RTv1.h"
 
-t_sphere new_sphere(t_vector center, double radius)
+t_sphere	new_sphere(t_vector center, double radius)
 {
 	t_sphere	res;
 
@@ -11,14 +11,14 @@ t_sphere new_sphere(t_vector center, double radius)
 	return (res);
 }
 
-t_object_intersect	intersect_ray_sphere(t_vector camera, t_vector direct,
-										   t_sphere sphere)
+double		intersect_ray_sphere(t_vector camera, t_vector direct,
+									t_sphere sphere)
 {
-	t_vector oc;
-	double a;
-	double b;
-	double c;
-	double discr;
+	t_vector	oc;
+	double		a;
+	double		b;
+	double		c;
+	double		discr;
 
 	oc = vector_sub(camera, sphere.center);
 	a = vector_dot(direct, direct);
@@ -33,24 +33,24 @@ t_object_intersect	intersect_ray_sphere(t_vector camera, t_vector direct,
 				((-b) - sqrt(discr)) / (2 * a)));
 }
 
-t_object	find_intersected_spheres(t_app *app, t_vector camera, t_vector direct,
-									 double length_min, double length_max)
+t_object	find_intersected_spheres(t_app *app, t_vector camera,
+								t_vector direct, double length_min)
 {
-	int		i;
-	t_object object;
-	t_object_intersect intersect_sphere;
+	int			i;
+	t_object	object;
+	double		distance;
 
 	i = -1;
 	object.flag = 0;
 	object.distance = INF;
 	while (++i < app->scene.spheres_amount)
 	{
-		intersect_sphere = intersect_ray_sphere(camera, direct, app->scene.spheres[i]);
-		if (between(length_min, INF, intersect_sphere.distance) &&
-			intersect_sphere.distance < object.distance)
+		distance = intersect_ray_sphere(camera, direct, app->scene.spheres[i]);
+		if (between(length_min, INF, distance) && distance < object.distance)
 		{
-			object.distance = intersect_sphere.distance;
-			object.hit_point = vec_add(camera, vec_mul_by(direct, object.distance));
+			object.distance = distance;
+			object.hit_point = vec_add(camera, vec_mul_by(direct,
+					object.distance));
 			object.center = app->scene.spheres[i].center;
 			object.normal = vector_sub(object.hit_point, object.center);
 			object.normal = (vec_normalize(object.normal));

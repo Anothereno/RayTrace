@@ -12,7 +12,7 @@ t_cone new_cone(t_vector center, double angle, t_vector rot)
 	return (res);
 }
 
-t_object_intersect	     intersect_ray_cone(t_vector camera, t_vector direct, t_cone cone)
+double	     intersect_ray_cone(t_vector camera, t_vector direct, t_cone cone)
 {
 
 	t_vector obj_cam;
@@ -54,23 +54,21 @@ void normal_cone(t_app *app, t_cone *cone, t_object *object)
 	object->normal = vec_normalize(object->normal);
 }
 
-t_object	find_intersected_cones(t_app *app, t_vector camera, t_vector direct,
-								   double length_min, double length_max, t_object prev_object)
+t_object	find_intersected_cones(t_app *app, t_vector camera, t_vector direct, double length_min, t_object prev_object)
 {
-	int		i;
-	t_object object;
-	t_object_intersect intersect_cone;
+	int			i;
+	t_object	object;
+	double		distance;
 
 	i = -1;
 	object.flag = 0;
 	object.distance = INF;
 	while (++i < app->scene.cones_amount)
 	{
-		intersect_cone = intersect_ray_cone(camera, direct, app->scene.cones[i]);
-		if (between(length_min, INF, intersect_cone.distance) &&
-			intersect_cone.distance < object.distance)
+		distance = intersect_ray_cone(camera, direct, app->scene.cones[i]);
+		if (between(length_min, INF, distance) && distance < object.distance)
 		{
-			object.distance = intersect_cone.distance;
+			object.distance = distance;
 			object.hit_point = vec_add(camera, vector_mult_scal(direct, object.distance));
 			object.center = app->scene.cones[i].center;
 			normal_cone(app, &app->scene.cones[i], &object);

@@ -59,34 +59,14 @@ t_vector	vector_mult_scal(t_vector first, double num)
 	return (res);
 }
 
-void	vector_mult_scal2(t_vector *res,t_vector *first, double num)
+double	set_intersect(double first, double second)
 {
-	res->x = first->x * num;
-	res->y = first->y * num;
-	res->z = first->z * num;
-}
-
-t_object_intersect set_intersect(double first, double second)
-{
-	t_object_intersect res;
-
+	double distance;
 
 	if (first < 0)
 		first = second;
-	if (first < 0)
-		res.distance = INF;
-	res.distance = MIN(first, second);
-	return (res);
-}
-
-t_color set_color(int red, int green, int blue)
-{
-	t_color color;
-
-	color.red = clamp(0, 255, red);
-	color.green = clamp(0, 255, green);
-	color.blue = clamp(0, 255, blue);
-	return (color);
+	distance = MIN(first, second);
+	return (distance);
 }
 
 double vector_dot(t_vector first, t_vector second)
@@ -136,19 +116,13 @@ t_vector	reflective(t_vector vector, t_vector normal)
 
 void light_calculate(t_app *app, t_object *object)
 {
-	double		result_intens;
 	t_vector	light_direct;
-	double 		diffuse;
 	double		light_intensity;
-	t_vector	R;
-	t_vector	V;
 	t_object	hit;
-	double		max;
 	double		light_distance;
 	t_vector	sub;
 	int			i;
 	double		dot;
-	double		rot;
 
 	i = -1;
 	object->diffuse = 0.1;
@@ -158,9 +132,9 @@ void light_calculate(t_app *app, t_object *object)
 		sub = vector_sub(app->scene.lights[i].position, object->hit_point);
 		light_direct = vec_normalize(sub);
 		light_distance = vector_length(sub);
-		hit = find_intersected_spheres(app, object->hit_point, light_direct, 0.001f, INF);
-		hit = find_intersected_cones(app, object->hit_point, light_direct, 0.001f, INF, hit);
-		hit = find_intersected_cylinders(app, object->hit_point, light_direct, 0.001f, INF, hit);
+		hit = find_intersected_spheres(app, object->hit_point, light_direct, 0.001f);
+		hit = find_intersected_cones(app, object->hit_point, light_direct, 0.001f, hit);
+		hit = find_intersected_cylinders(app, object->hit_point, light_direct, 0.001f, hit);
 
 		if (hit.flag != 0 && hit.distance < light_distance)
 			continue;
@@ -174,36 +148,6 @@ void light_calculate(t_app *app, t_object *object)
 	}
 }
 
-
-t_color	to_hsv(int rand_num)
-{
-	t_color color;
-	double	calc_color;
-
-	calc_color = (1 - fabs(fmod(rand_num / 60.0, 2) - 1)) * 255;
-	if (rand_num >= 0 && rand_num < 60)
-		color = set_color(255, calc_color, 0);
-	else if (rand_num >= 60 && rand_num < 120)
-		color = set_color(calc_color, 255, 0);
-	else if (rand_num >= 120 && rand_num < 180)
-		color = set_color(0, 255, calc_color);
-	else if (rand_num >= 180 && rand_num < 240)
-		color = set_color(0, calc_color, 255);
-	else if (rand_num >= 240 && rand_num < 300)
-		color = set_color(calc_color, 0, 255);
-	else
-		color = set_color(255, 0, calc_color);
-	return(color);
-}
-
-t_color	color_randomize()
-{
-	t_color color;
-
-	color = to_hsv(rand() % 360);
-	return (color);
-}
-
 t_color pallete(t_color color, double num)
 {
 	t_color res;
@@ -214,37 +158,25 @@ t_color pallete(t_color color, double num)
 	return (res);
 }
 
-void	vector_inverse(t_vector *normal)
+t_color		raytrace(t_app *app)
 {
-	normal->x = -normal->x;
-	normal->y = -normal->y;
-	normal->z = -normal->z;
-}
-
-void	sum_color(t_color *first, t_color second)
-{
-	first->red += second.red;
-	first->blue += second.blue;
-	first->green += second.green;
-	*first = set_color(first->red, first->green, first->blue);
-}
-
-t_color raytrace(double length_min, double length_max, t_app *app)
-{
-	t_color	pixel_color;
-	t_color	temp_color;
+	t_color		pixel_color;
+	t_color		temp_color;
 	t_object	object;
 
-
-	object = find_intersected_spheres(app, app->camera.camera, app->camera.direct, length_min, length_max);
-	object = find_intersected_cylinders(app, app->camera.camera, app->camera.direct, length_min, length_max, object);
-	object = find_intersected_cones(app, app->camera.camera, app->camera.direct, length_min, length_max, object);
-	object = find_intersected_planes(app, app->camera.camera, app->camera.direct, length_min, length_max, object);
+	if (app->scene.spheres_amount != 0)
+		object = find_intersected_spheres(app, app->camera.camera, app->camera.direct,1);
+	if (app->scene.cylinders_amount != 0)
+		object = find_intersected_cylinders(app, app->camera.camera, app->camera.direct,1, object);
+	if (app->scene.cones_amount != 0)
+		object = find_intersected_cones(app, app->camera.camera, app->camera.direct,1, object);
+	if (app->scene.planes_amount != 0)
+		object = find_intersected_planes(app, app->camera.camera, app->camera.direct, object);
 	if (!object.flag)
 		return (set_color(0, 0, 0));
 	light_calculate(app, &object);
 	pixel_color = pallete(object.color, object.diffuse);
 	temp_color = pallete(set_color(255, 255, 255), object.specular);
-	sum_color(&pixel_color, temp_color);
+	sum_color(&pixel_color, &temp_color);
 	return (pixel_color);
 }
