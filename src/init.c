@@ -29,6 +29,7 @@ void	init_app(t_app *app)
 	app->camera.rotate_speed = 4.0f;
 	ft_bzero(&app->scene, sizeof(app->scene));
 	app->scene.light_speed = 0.5f;
-
+	app->black = set_color(0, 0 ,0);
+	app->white = set_color(255, 255,255);
 	srand(time(0));
 }

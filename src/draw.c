@@ -9,13 +9,13 @@ int 	out_of_border(int x, int y)
     return (0);
 }
 
-void	set_pixel(SDL_Surface *surface, int x, int y, t_color c)
+void set_pixel(SDL_Surface *surface, int x, int y, t_color c)
 {
 	int		offset;
 
   /*  if (out_of_border(x, y))
         return ;*/
-	offset = 4 * (y * surface -> w + x);
+	offset = 4 * (y * SCREEN_WIDTH + x);
 	unsigned char* pixels = (unsigned char*)surface->pixels;
 	pixels[offset] = c.blue;
 	pixels[offset + 1] = c.green;

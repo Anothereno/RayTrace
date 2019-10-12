@@ -112,8 +112,8 @@ void	read_file_count_obj(t_app *app, char** argv)
 		amount = amount_elements(temp);
 		string_processing_counting(temp, app, amount);
 		clear_split(temp);
+		free(line);
 	}
-	free(line);
 	init_objects(&app->scene);
 	close(fd);
 
@@ -133,8 +133,8 @@ void	read_file_write_obj(t_app *app, char** argv)
 		temp = ft_strsplit(line, ' ');
 		string_processing_writing(temp, app);
 		clear_split(temp);
+		free(line);
 	}
-	free(line);
 	//clear_split(temp);
 	close(fd);
 }

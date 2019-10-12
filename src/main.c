@@ -45,7 +45,7 @@ int		main(int argc, char **argv)
 {
 	t_app	*app;
 
-//	getchar();
+	getchar();
 	if (argc != 2)
 		ft_error("No arguments passed.\n"
 		   "Usage : ./RTv1  configuration_file.scene");

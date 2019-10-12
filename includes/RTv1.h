@@ -12,14 +12,12 @@
 # include <SDL.h>
 //# include <SDL_ttf.h>
 # define RAD 0.0174533f
-# define SCREEN_WIDTH 400
-# define SCREEN_HEIGHT 400
-# define CENTER_WIDTH (SCREEN_WIDTH / 2)
-# define CENTER_HEIGHT (SCREEN_HEIGHT / 2)
+# define SCREEN_WIDTH 800
+# define SCREEN_HEIGHT 600
 # define MAX(a, b) a > b ? a : b
 # define MIN(a, b) a > b ? b : a
 # define INF 9999999
-# define THREAD_AMOUNT 1
+# define THREAD_AMOUNT 200
 
 
 typedef enum e_types
@@ -184,6 +182,8 @@ typedef struct	s_app
 	char			*cur_scene;
 	int 			number_scene;
 	pthread_mutex_t locker;
+	t_color			black;
+	t_color			white;
 }				t_app;
 
 typedef struct		s_thread
@@ -202,19 +202,21 @@ typedef struct s_sphere_intersect
 	double 			distance;
 }				t_object_intersect;
 
+t_vector rotation_y(t_camera *camera, t_vector viewport);
+t_vector to_viewport(int x, int y);
 t_color				color_randomize();
 void				read_file_write_obj(t_app *app, char** argv);
 double				intersect_ray_sphere(t_vector camera, t_vector direct, t_sphere sphere);
 void				initialize_sdl(t_app *app);
 void				init(t_app *app);
 int					event_handling(t_app *app);
-void				set_pixel(SDL_Surface *surface, int x, int y, t_color c);
+void set_pixel(SDL_Surface *surface, int x, int y, t_color c);
 void				init_app(t_app *app);
 
 void				init_objects(t_scene *scene);
 void				read_file_count_obj(t_app *app, char** argv);
 void				ft_error(char *str);
-t_color				raytrace(t_app *app);
+void raytrace(t_app *app, int x, int y);
 t_vector 			set_vertex(double x, double y, double z);
 double				vector_dot(t_vector first, t_vector second);
 t_vector			vector_sub(t_vector first, t_vector second);

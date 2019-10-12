@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/19 13:49:21 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/11 20:53:17 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/12 18:27:52 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,12 @@ static int	returner(char **string, char **line)
 	}
 	*line = *string;
 	*string = ft_strdup("");
+	tmp = *string;
 	if (delim && ft_strlen(delim))
 	{
 		free(*string);
 		*string = ft_strdup(delim);
 	}
-
 	if ((*line && ft_strcmp(*line, "")) ||
 		(*line && !ft_strcmp(*line, "") && flag))
 		return (1);

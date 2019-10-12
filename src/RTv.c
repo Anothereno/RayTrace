@@ -114,7 +114,7 @@ t_vector	reflective(t_vector vector, t_vector normal)
 	return res;
 }
 
-void light_calculate(t_app *app, t_object *object)
+void light_calculate(t_app *app, t_object *object, t_camera *camera)
 {
 	t_vector	light_direct;
 	double		light_intensity;
@@ -144,7 +144,7 @@ void light_calculate(t_app *app, t_object *object)
 		object->diffuse += light_intensity * dot;
 		object->specular += pow(MAX(0, vector_dot(
 				vec_invert(reflective(vec_invert(light_direct),
-						object->normal)), app->camera.direct)), 300) * light_intensity;
+						object->normal)), camera->direct)), 300) * light_intensity;
 	}
 }
 
@@ -158,25 +158,34 @@ t_color pallete(t_color color, double num)
 	return (res);
 }
 
-t_color		raytrace(t_app *app)
+void raytrace(t_app *app, int x, int y)
 {
 	t_color		pixel_color;
 	t_color		temp_color;
 	t_object	object;
+	t_camera	camera;
 
+	camera = app->camera;
+	camera.direct =
+			vec_normalize(rotation_y(&camera,
+									 to_viewport(x, y)));
 	if (app->scene.spheres_amount != 0)
-		object = find_intersected_spheres(app, app->camera.camera, app->camera.direct,1);
+		object = find_intersected_spheres(app, camera.camera, camera.direct,1);
 	if (app->scene.cylinders_amount != 0)
-		object = find_intersected_cylinders(app, app->camera.camera, app->camera.direct,1, object);
+		object = find_intersected_cylinders(app, camera.camera, camera.direct,1, object);
 	if (app->scene.cones_amount != 0)
-		object = find_intersected_cones(app, app->camera.camera, app->camera.direct,1, object);
+		object = find_intersected_cones(app, camera.camera, camera.direct,1, object);
 	if (app->scene.planes_amount != 0)
-		object = find_intersected_planes(app, app->camera.camera, app->camera.direct, object);
+		object = find_intersected_planes(app, camera.camera, camera.direct, object);
 	if (!object.flag)
-		return (set_color(0, 0, 0));
-	light_calculate(app, &object);
+	{
+		set_pixel(app->sdl->surface, x, y, app->black);
+		return ;
+	}
+	light_calculate(app, &object, &camera);
 	pixel_color = pallete(object.color, object.diffuse);
 	temp_color = pallete(set_color(255, 255, 255), object.specular);
 	sum_color(&pixel_color, &temp_color);
-	return (pixel_color);
+	set_pixel(app->sdl->surface, x, y, pixel_color);
+
 }
