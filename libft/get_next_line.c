@@ -15,6 +15,7 @@
 static	int	ft_find_next_line(char **str, char **line)
 {
 	char	*cur;
+
 	if (*str && (cur = ft_strchr(*str, '\n')))
 	{
 		*cur = '\0';
