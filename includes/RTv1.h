@@ -60,11 +60,9 @@ typedef struct		s_sdl
 
 typedef struct s_camera
 {
-	t_vector		camera;
+	t_vector		position;
 	t_vector		direct;
-	double 			rotate_angle_y;
-	double 			rotate_angle_x;
-	double 			rotate_angle_z;
+	t_vector		rotation;
 	double			camera_speed;
 	double 			rotate_speed;
 }				t_camera;
@@ -186,6 +184,20 @@ typedef struct	s_app
 	t_color			white;
 }				t_app;
 
+typedef struct		light_spot
+{
+	t_vector	light_direct;
+	double		light_intensity;
+	double		light_distance;
+}					t_light_spot;
+
+typedef struct		s_abc
+{
+	double a;
+	double b;
+	double c;
+}					t_abc;
+
 typedef struct		s_thread
 {
 	int				id;
@@ -202,8 +214,18 @@ typedef struct s_sphere_intersect
 	double 			distance;
 }				t_object_intersect;
 
+void	create_light(t_app *app, char **string);
+void	create_cylinder(t_app *app, char **string);
+void	create_cone(t_app *app, char **string);
+void	create_plane(t_app *app, char **string);
+void		create_sphere(t_app *app, char **string);
+t_vector			reflective(t_vector vector, t_vector normal);
+void				light_calculate(t_app *app, t_object *object, t_camera *camera);
+void				set_spot(t_light_spot *spot, t_object *object, int i, t_app *app);
+void				set_camera(t_app *app, t_vector position, t_vector rotation);
+void				view_direction(t_vector *axis, t_vector rot);
 t_vector rotation_y(t_camera *camera, t_vector viewport);
-t_vector to_viewport(int x, int y);
+t_vector to_viewport(t_app *app, int x, int y);
 t_color				color_randomize();
 void				read_file_write_obj(t_app *app, char** argv);
 double				intersect_ray_sphere(t_vector camera, t_vector direct, t_sphere sphere);
@@ -216,27 +238,22 @@ void				init_objects(t_scene *scene);
 void				read_file_count_obj(t_app *app, char** argv);
 void				ft_error(char *str);
 void raytrace(t_app *app, int x, int y);
-t_vector 			set_vertex(double x, double y, double z);
+t_vector 			set_vector(double x, double y, double z);
 double				vector_dot(t_vector first, t_vector second);
 t_vector			vector_sub(t_vector first, t_vector second);
-double 				vec_length(t_vector v);
-t_vector			vec_normalize(t_vector v);
-double				vec_dot(t_vector v1, t_vector v2);
-t_vector			vec_cross(t_vector v1, t_vector v2);
-t_vector			vec_add(t_vector v1, t_vector v2);
-t_vector			vec_new(double x, double y, double z);
-t_vector			vec_sub(t_vector v1, t_vector v2);
-t_vector			vec_mul_by(t_vector v, double k);
-t_vector			vec_div_by(t_vector v, double k);
+t_vector			vector_add(t_vector first, t_vector second);
+t_vector			vector_div_scal(t_vector first, double num);
 t_vector			vector_mult_scal(t_vector first, double num);
-t_vector			vec_invert(t_vector v);
-t_sphere new_sphere(t_vector center, double radius);
-t_cylinder new_cylinder(t_vector center, double radius, t_vector rot);
-t_plane new_plane(t_vector center, t_vector normal);
-t_cone new_cone(t_vector center, double angle, t_vector rot);
-t_light				new_light(t_vector direct, double intensity);
+double 				vec_length(t_vector v);
+t_vector			normalize(t_vector v);
+t_vector			vector_mult_scal(t_vector first, double num);
+t_sphere new_sphere(t_app *app, t_vector center, double radius);
+t_cylinder new_cylinder(t_app *app, t_vector center, double radius, t_vector rot);
+t_plane new_plane(t_app *app, t_vector center, t_vector normal);
+t_cone new_cone(t_app *app, t_vector center, double angle, t_vector rot);
+t_light new_light(t_app *app, t_vector direct, double intensity);
 
-
+t_vector			vector_invert(t_vector v);
 void				vec_invert2(t_vector *v, t_vector *v2);
 void				vector_mult_scal2(t_vector *res,t_vector *first, double num);
 t_vector			set_vertex2(double *x, double *y, double *z);
@@ -252,15 +269,16 @@ double				vector_length(t_vector vector);
 void				redraw(t_app *app);
 
 void				set_axis(t_vector *axis, t_vector rot);
-t_sphere new_sphere(t_vector center, double radius);
+t_sphere new_sphere(t_app *app, t_vector center, double radius);
 void				check_lights(const uint8_t *key, t_app *app);
 void				check_camera(const uint8_t *key, t_app *app);
 double				set_intersect(double first, double second);
 int 				between(double min, double max, double num);
-t_object			find_intersected_cones(t_app *app, t_vector camera, t_vector direct, double length_min, t_object prev_object);
-t_object			find_intersected_cylinders(t_app *app, t_vector camera, t_vector direct, double length_min, t_object prev_object);
-t_object			find_intersected_planes(t_app *app, t_vector camera, t_vector direct,  t_object prev_object);
-t_object			find_intersected_spheres(t_app *app, t_vector camera, t_vector direct, double length_min);
+t_object find_intersected_cones(t_app *app, double length_min, t_object prev_object, t_camera *camera);
+t_object
+find_intersected_cylinders(t_app *app, double length_min, t_object prev_object, t_camera *camera);
+t_object find_intersected_planes(t_app *app, t_object prev_object, t_camera *camera);
+t_object find_intersected_spheres(t_app *app, double length_min, t_camera *camera);
 int					map_read(int fd, t_app *app);
 void				set_pixel2(t_app *app, int x, int y, t_color c);
 t_color				to_hsv(int rand_num);

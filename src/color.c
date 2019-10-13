@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   color.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/13 16:31:07 by hdwarven          #+#    #+#             */
+/*   Updated: 2019/10/13 17:57:06 by hdwarven         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "RTv1.h"
 
-t_color set_color(int red, int green, int blue)
+t_color	set_color(int red, int green, int blue)
 {
 	t_color color;
 
@@ -36,13 +48,23 @@ t_color	to_hsv(int rand_num)
 		color = set_color(calc_color, 0, 255);
 	else
 		color = set_color(255, 0, calc_color);
-	return(color);
+	return (color);
 }
 
-t_color	color_randomize()
+t_color	color_randomize(void)
 {
 	t_color color;
 
 	color = to_hsv(rand() % 360);
 	return (color);
+}
+
+t_color	pallete(t_color color, double num)
+{
+	t_color res;
+
+	res.red = clamp(0, 255, color.red * num);
+	res.blue = clamp(0, 255, color.blue * num);
+	res.green = clamp(0, 255, color.green * num);
+	return (res);
 }

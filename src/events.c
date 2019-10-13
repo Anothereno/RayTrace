@@ -1,25 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   draw.c                                             :+:      :+:    :+:   */
+/*   events.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/13 17:36:17 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 17:36:41 by hdwarven         ###   ########.fr       */
+/*   Created: 2019/10/13 17:45:05 by hdwarven          #+#    #+#             */
+/*   Updated: 2019/10/13 17:45:59 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "RTv1.h"
 
-void	set_pixel(SDL_Surface *surface, int x, int y, t_color c)
+int		event_handling(t_app *app)
 {
-	int				offset;
-	unsigned char	*pixels;
+	const uint8_t *key;
 
-	offset = 4 * (y * SCREEN_WIDTH + x);
-	pixels = (unsigned char*)surface->pixels;
-	pixels[offset] = c.blue;
-	pixels[offset + 1] = c.green;
-	pixels[offset + 2] = c.red;
+	key = app->sdl->keys;
+	SDL_WaitEvent(&app->sdl->event);
+	if (app->sdl->event.type == SDL_QUIT
+			|| key[SDL_SCANCODE_ESCAPE])
+		return (0);
+	check_camera(key, app);
+	check_lights(key, app);
+	check_for_redraw(key, app);
+	return (1);
+}
+
+void	ft_error(char *str)
+{
+	ft_putendl(str);
+	exit(0);
 }

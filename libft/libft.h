@@ -23,6 +23,7 @@ typedef struct	s_list
 	struct s_list	*next;
 }				t_list;
 
+void			clear_split(char **string);
 unsigned long	ft_count_word(char const *s, char c);
 void			ft_clear_string_array(char **array, int size);
 int				ft_is_uppercase(char c);

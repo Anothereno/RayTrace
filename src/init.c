@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/13 17:46:25 by hdwarven          #+#    #+#             */
+/*   Updated: 2019/10/13 17:46:40 by hdwarven         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "RTv1.h"
 
 void	init_objects(t_scene *scene)
@@ -23,12 +35,11 @@ void	init_app(t_app *app)
 			SCREEN_WIDTH, SCREEN_HEIGHT, 0);
 	app->sdl->surface = SDL_GetWindowSurface(app->sdl->window);
 	app->sdl->keys = SDL_GetKeyboardState(NULL);
-	app->camera.rotate_angle_y = 0;
 	app->camera.camera_speed = 3;
 	app->camera.rotate_speed = 3.5;
 	ft_bzero(&app->scene, sizeof(app->scene));
 	app->scene.light_speed = 0.5;
-	app->black = set_color(0, 0 ,0);
-	app->white = set_color(255, 255,255);
+	app->black = set_color(0, 0, 0);
+	app->white = set_color(255, 255, 255);
 	srand(time(0));
 }

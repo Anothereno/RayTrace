@@ -1,19 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   start.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/13 19:14:22 by hdwarven          #+#    #+#             */
+/*   Updated: 2019/10/13 19:14:55 by hdwarven         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "RTv1.h"
-
-t_vector to_viewport(int x, int y)
-{
-	t_vector vector;
-
-	double u_scale = SCREEN_WIDTH > SCREEN_HEIGHT ? (double)SCREEN_WIDTH / (double)SCREEN_HEIGHT : 1.0f;
-	double v_scale = SCREEN_HEIGHT > SCREEN_WIDTH ? (double)SCREEN_HEIGHT / (double)SCREEN_WIDTH : 1.0f;
-
-	vector.x = (double)x / (SCREEN_WIDTH - 1) - 0.5;
-	vector.y = 0.5 - (double)y / (SCREEN_HEIGHT - 1);
-	vector.x *= u_scale;
-	vector.y *= v_scale;
-	vector.z = 1.0;
-	return (vector);
-}
 
 double	clamp(int min, int max, int num)
 {
@@ -22,16 +19,6 @@ double	clamp(int min, int max, int num)
 	else if (num > max)
 		return (max);
 	return (num);
-}
-
-t_vector rotation_y(t_camera *camera, t_vector viewport)
-{
-	t_vector res;
-
-	res.x = viewport.x * cos(camera->rotate_angle_y)  + viewport.z * sin(camera->rotate_angle_y);
-	res.y = viewport.y;
-	res.z = viewport.x * sin(camera->rotate_angle_y) * -1.0f + viewport.z * cos(camera->rotate_angle_y);
-	return (res);
 }
 
 void	quit(t_app *app)
@@ -53,15 +40,15 @@ void	start_the_game(t_app *app)
 	redraw(app);
 	while (1)
 		if (!event_handling(app))
-			break;
+			break ;
 	quit(app);
 }
 
 void	*draw_thread(void *thread_info)
 {
-	int x;
-	int y;
-	t_thread thread;
+	int			x;
+	int			y;
+	t_thread	thread;
 
 	thread = *(t_thread*)thread_info;
 	y = thread.y_start - 1;
@@ -85,7 +72,8 @@ void	redraw(t_app *app)
 		threads_info[i].y_start = i * (SCREEN_HEIGHT / THREAD_AMOUNT);
 		threads_info[i].y_finish = (i + 1) * (SCREEN_HEIGHT / THREAD_AMOUNT);
 		threads_info[i].app = app;
-		if (pthread_create(&threads_info[i].pthread, NULL, draw_thread, &threads_info[i]))
+		if (pthread_create(&threads_info[i].pthread,
+				NULL, draw_thread, &threads_info[i]))
 			ft_error("Threads was crashed");
 	}
 	i = -1;

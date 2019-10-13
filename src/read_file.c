@@ -1,12 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   read_file.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/13 18:40:00 by hdwarven          #+#    #+#             */
+/*   Updated: 2019/10/13 19:07:37 by hdwarven         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "RTv1.h"
 
-int 	amount_elements(char **string)
+int		amount_elements(char **string)
 {
 	int i;
 	int res;
 
 	res = 0;
-	i  = -1;
+	i = -1;
 	while (string[++i])
 		res++;
 	return (res);
@@ -14,7 +26,6 @@ int 	amount_elements(char **string)
 
 void	string_processing_counting(char **string, t_app *app, int amount)
 {
-
 	if (ft_strequ(*string, "sphere") && amount == 5)
 		app->scene.spheres_amount++;
 	else if (ft_strequ(*string, "plane") && amount == 7)
@@ -33,70 +44,26 @@ void	string_processing_counting(char **string, t_app *app, int amount)
 
 void	string_processing_writing(char **string, t_app *app)
 {
-
 	if (ft_strequ(string[0], "sphere"))
-	{
-		app->scene.spheres[app->scene.cur_sphere] = new_sphere(set_vertex(ft_atoi(string[1]), ft_atoi(string[2]),
-				ft_atoi(string[3])), ft_atoi(string[4]));
-		app->scene.cur_sphere++;
-	}
+		create_sphere(app, string);
 	else if (ft_strequ(string[0], "plane"))
-	{
-		app->scene.planes[app->scene.cur_plane] = new_plane(set_vertex(ft_atoi(string[1]), ft_atoi(string[2]),
-																		  ft_atoi(string[3])),
-															set_vertex(ft_atoi(string[4]), ft_atoi(string[5]),
-																		  ft_atoi(string[6])));
-		app->scene.cur_plane++;
-	}
+		create_plane(app, string);
 	else if (ft_strequ(string[0], "cone"))
-	{
-		app->scene.cones[app->scene.cur_cone] = new_cone(set_vertex(ft_atoi(string[1]), ft_atoi(string[2]),
-																	   ft_atoi(string[3])),
-															ft_atoi(string[4]),
-															set_vertex(ft_atoi(string[5]), ft_atoi(string[6]),
-																	   ft_atoi(string[7])));
-		app->scene.cur_cone++;
-
-	}
+		create_cone(app, string);
 	else if (ft_strequ(string[0], "cylinder"))
-	{
-		app->scene.cylinders[app->scene.cur_cylinder] = new_cylinder(set_vertex(ft_atoi(string[1]), ft_atoi(string[2]),
-																	ft_atoi(string[3])),
-														 ft_atoi(string[4]),
-														 set_vertex(ft_atoi(string[5]), ft_atoi(string[6]),
-																	ft_atoi(string[7])));
-
-		app->scene.cur_cylinder++;
-
-	}
+		create_cylinder(app, string);
 	else if (ft_strequ(string[0], "camera"))
-	{
-		app->camera.camera = set_vertex(ft_atoi(string[1]), ft_atoi(string[2]), ft_atoi(string[3]));
-	}
+		set_camera(app, set_vector(ft_atoi(string[1]), ft_atoi(string[2]),
+				ft_atoi(string[3])),
+				set_vector(ft_atoi(string[4]), ft_atoi(string[5]),
+				ft_atoi(string[6])));
 	else if (ft_strequ(string[0], "light"))
-	{
-		app->scene.lights[app->scene.cur_light] = new_light(set_vertex(ft_atoi(string[1]), ft_atoi(string[2]),
-							 ft_atoi(string[3])), ft_atoi(string[4]));
-		app->scene.cur_light++;
-	}
+		create_light(app, string);
 	else
-		ft_error("Wrong file333");
+		ft_error("Wrong file\n");
 }
 
-void	clear_split(char **string)
-{
-	int i;
-
-	i = 0;
-	while (string[i] != 0)
-	{
-		free(string[i]);
-		i++;
-	}
-	free(string);
-}
-
-void	read_file_count_obj(t_app *app, char** argv)
+void	read_file_count_obj(t_app *app, char **argv)
 {
 	int		fd;
 	char	*line;
@@ -105,7 +72,7 @@ void	read_file_count_obj(t_app *app, char** argv)
 
 	if ((fd = open(argv[1], O_RDONLY)) < 3)
 		ft_error("Cannot read.\n"
-				 "Usage : ./RTv1  configuration_file.scene");
+			"Usage : ./RTv1  configuration_file.scene");
 	while (get_next_line(fd, &line))
 	{
 		temp = ft_strsplit(line, ' ');
@@ -116,10 +83,9 @@ void	read_file_count_obj(t_app *app, char** argv)
 	}
 	init_objects(&app->scene);
 	close(fd);
-
 }
 
-void	read_file_write_obj(t_app *app, char** argv)
+void	read_file_write_obj(t_app *app, char **argv)
 {
 	int		fd;
 	char	*line;
@@ -127,7 +93,11 @@ void	read_file_write_obj(t_app *app, char** argv)
 
 	if ((fd = open(argv[1], O_RDONLY)) < 3)
 		ft_error("Cannot write.\n"
-				 "Usage : ./RTv1  configuration_file.scene");
+			"Usage : ./RTv1  configuration_file");
+	else if (app->scene.cameras_amount < 1)
+		ft_error("No camera set\n");
+	else if (app->scene.lights_amount < 1)
+		ft_error("No light spot installed\n");
 	while (get_next_line(fd, &line))
 	{
 		temp = ft_strsplit(line, ' ');
@@ -135,6 +105,5 @@ void	read_file_write_obj(t_app *app, char** argv)
 		clear_split(temp);
 		free(line);
 	}
-	//clear_split(temp);
 	close(fd);
 }
