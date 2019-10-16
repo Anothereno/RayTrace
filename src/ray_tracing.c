@@ -57,12 +57,12 @@ void		raytrace(t_app *app, int x, int y)
 		object = find_intersected_planes(app, object, &camera);
 	if (!object.flag)
 	{
-		set_pixel(app->sdl->surface, x, y, app->black);
+		set_pixel(app->sdl->surface, x, y, &app->black);
 		return ;
 	}
 	light_calculate(app, &object, &camera);
 	pixel_color = pallete(object.color, object.diffuse);
 	temp_color = pallete(app->white, object.specular);
 	sum_color(&pixel_color, &temp_color);
-	set_pixel(app->sdl->surface, x, y, pixel_color);
+	set_pixel(app->sdl->surface, x, y, &pixel_color);
 }

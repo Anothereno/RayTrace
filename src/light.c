@@ -33,7 +33,7 @@ void		light_calculate(t_app *app, t_object *object, t_camera *camera)
 			continue;
 		dot = MAX(0, vector_dot(spot.light_direct, object->normal));
 		light_intensity = app->scene.lights[i].intensity * 200;
-		light_intensity /= 4 * M_PI * pow(spot.light_distance, 2);
+		light_intensity /= 4 * M_PI * POWTWO(spot.light_distance);
 		object->diffuse += light_intensity * dot;
 		object->specular += pow(MAX(0, vector_dot(
 			vector_invert(reflective(vector_invert(spot.light_direct),

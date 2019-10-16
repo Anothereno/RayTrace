@@ -24,9 +24,9 @@ void		set_axis(t_vector *axis, t_vector rot)
 	t_vector	tmp_1;
 	t_vector	tmp_2;
 
-	rot.y *= M_PI / 180.0;
-	rot.x *= M_PI / 180.0;
-	rot.z *= M_PI / 180.0;
+	rot.y *= M_PI_180;
+	rot.x *= M_PI_180;
+	rot.z *= M_PI_180;
 	tmp_1 = set_vector(0.0, -1.0, 0.0);
 	tmp_2 = tmp_1;
 	tmp_1.x = tmp_2.x * cos(rot.z) - tmp_2.y * sin(rot.z);
@@ -45,9 +45,9 @@ void		view_direction(t_vector *axis, t_vector rot)
 	t_vector	tmp_1;
 	t_vector	tmp_2;
 
-	rot.y *= M_PI / 180.0;
-	rot.x *= M_PI / 180.0;
-	rot.z *= M_PI / 180.0;
+	rot.y *= M_PI_180;
+	rot.x *= M_PI_180;
+	rot.z *= M_PI_180;
 	tmp_1 = *axis;
 	tmp_2 = tmp_1;
 	tmp_1.x = tmp_2.x * cos(rot.z) - tmp_2.y * sin(rot.z);
@@ -68,9 +68,9 @@ t_vector	to_viewport(t_app *app, int x, int y)
 	double		v_scale;
 
 	u_scale = SCREEN_WIDTH > SCREEN_HEIGHT ?
-			(double)SCREEN_WIDTH / (double)SCREEN_HEIGHT : 1.0f;
+			(double)SCREEN_WIDTH / (double)SCREEN_HEIGHT : 1.0;
 	v_scale = SCREEN_HEIGHT > SCREEN_WIDTH ?
-			(double)SCREEN_HEIGHT / (double)SCREEN_WIDTH : 1.0f;
+			(double)SCREEN_HEIGHT / (double)SCREEN_WIDTH : 1.0;
 	vector.x = (double)x / (SCREEN_WIDTH - 1) - 0.5;
 	vector.y = 0.5 - (double)y / (SCREEN_HEIGHT - 1);
 	vector.x *= u_scale;

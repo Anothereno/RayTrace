@@ -19,7 +19,6 @@
 # include <stdlib.h>
 # include <string.h>
 # include <pthread.h>
-# include "../libft/get_next_line.h"
 # include <SDL.h>
 # define RAD 0.0174533f
 # define SCREEN_WIDTH 400
@@ -28,6 +27,8 @@
 # define MIN(a, b) a > b ? b : a
 # define INF 9999999
 # define THREAD_AMOUNT 200
+# define POWTWO(a) (a * a)
+# define M_PI_180  0.017453292519943295
 
 typedef struct		s_vector
 {
@@ -185,7 +186,6 @@ t_color				color_randomize();
 void				read_file_write_obj(t_app *app, char **argv);
 double				intersect_ray_sphere(t_vector camera,
 						t_vector direct, t_sphere sphere);
-void				set_pixel(SDL_Surface *surface, int x, int y, t_color c);
 void				init_app(t_app *app);
 void				init_objects(t_scene *scene);
 void				read_file_count_obj(t_app *app, char **argv);
@@ -197,7 +197,6 @@ t_vector			vector_sub(t_vector first, t_vector second);
 t_vector			vector_add(t_vector first, t_vector second);
 t_vector			vector_mult_scal(t_vector first, double num);
 t_vector			normalize(t_vector v);
-t_vector			vector_mult_scal(t_vector first, double num);
 t_sphere			new_sphere(t_app *app, t_vector center, double radius);
 t_cylinder			new_cylinder(t_app *app, t_vector center,
 						double radius, t_vector rot);
@@ -215,9 +214,7 @@ int					event_handling(t_app *app);
 double				vector_length(t_vector vector);
 void				redraw(t_app *app);
 void				set_axis(t_vector *axis, t_vector rot);
-t_sphere			new_sphere(t_app *app, t_vector center, double radius);
 void				check_lights(const uint8_t *key, t_app *app);
-void				check_camera(const uint8_t *key, t_app *app);
 double				set_intersect(double first, double second);
 int					between(double min, double max, double num);
 t_object			find_intersected_cones(t_app *app,
@@ -233,5 +230,6 @@ t_object			find_intersected_spheres(t_app *app,
 t_color				to_hsv(int rand_num);
 void				sum_color(t_color *first, t_color *second);
 void				check_for_redraw(const uint8_t *key, t_app *app);
+void				set_pixel(SDL_Surface *surface, int x, int y, t_color *c);
 
 #endif

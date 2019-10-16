@@ -22,14 +22,14 @@ void	check_for_redraw(const uint8_t *key, t_app *app)
 		redraw(app);
 }
 
-void	move_light(t_app *app, double angle)
+void	move_light(t_scene *scene, double angle)
 {
-	app->scene.lights[app->scene.cur_light_control].position.x =
-			app->scene.lights[app->scene.cur_light_control].position.x
-			+ app->scene.light_speed * sin(angle);
-	app->scene.lights[app->scene.cur_light_control].position.z =
-			app->scene.lights[app->scene.cur_light_control].position.z
-			+ app->scene.light_speed * cos(angle);
+	scene->lights[scene->cur_light_control].position.x =
+			scene->lights[scene->cur_light_control].position.x
+			+ scene->light_speed * sin(angle);
+	scene->lights[scene->cur_light_control].position.z =
+			scene->lights[scene->cur_light_control].position.z
+			+ scene->light_speed * cos(angle);
 }
 
 void	check_lights(const uint8_t *key, t_app *app)
@@ -40,13 +40,13 @@ void	check_lights(const uint8_t *key, t_app *app)
 			app->scene.cur_light_control + 1 < app->scene.lights_amount)
 		app->scene.cur_light_control++;
 	if (key[SDL_SCANCODE_KP_4])
-		move_light(app, (app->camera.rotation.y - 90) * RAD);
+		move_light(&app->scene, (app->camera.rotation.y - 90) * RAD);
 	if (key[SDL_SCANCODE_KP_6])
-		move_light(app, (app->camera.rotation.y + 90) * RAD);
+		move_light(&app->scene, (app->camera.rotation.y + 90) * RAD);
 	if (key[SDL_SCANCODE_KP_5])
-		move_light(app, (app->camera.rotation.y + 180) * RAD);
+		move_light(&app->scene, (app->camera.rotation.y + 180) * RAD);
 	if (key[SDL_SCANCODE_KP_8])
-		move_light(app, app->camera.rotation.y * RAD);
+		move_light(&app->scene, app->camera.rotation.y * RAD);
 	if (key[SDL_SCANCODE_KP_9])
 		app->scene.lights[app->scene.cur_light_control].position.y += 2.1f;
 	if (key[SDL_SCANCODE_KP_3])

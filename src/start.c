@@ -49,7 +49,6 @@ void	start_the_game(t_app *app)
 	while (1)
 		if (!event_handling(app))
 			break ;
-	quit(app);
 }
 
 void	*draw_thread(void *thread_info)

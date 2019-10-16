@@ -12,14 +12,14 @@
 
 #include "rtv.h"
 
-void	set_pixel(SDL_Surface *surface, int x, int y, t_color c)
+void	set_pixel(SDL_Surface *surface, int x, int y, t_color *c)
 {
 	int				offset;
 	unsigned char	*pixels;
 
 	offset = 4 * (y * SCREEN_WIDTH + x);
 	pixels = (unsigned char*)surface->pixels;
-	pixels[offset] = c.blue;
-	pixels[offset + 1] = c.green;
-	pixels[offset + 2] = c.red;
+	pixels[offset] = c->blue;
+	pixels[offset + 1] = c->green;
+	pixels[offset + 2] = c->red;
 }

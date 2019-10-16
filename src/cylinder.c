@@ -35,12 +35,12 @@ double		intersect_ray_cylinder(t_vector camera,
 
 	oc = vector_sub(camera, cylinder.center);
 	abc.a = vector_dot(direct, direct)
-			- pow(vector_dot(direct, cylinder.axis), 2);
+			- POWTWO(vector_dot(direct, cylinder.axis));
 	abc.b = (vector_dot(direct, oc)
 			- vector_dot(direct, cylinder.axis)
 			* vector_dot(oc, cylinder.axis)) * 2;
 	abc.c = vector_dot(oc, oc)
-			- pow(vector_dot(oc, cylinder.axis), 2)
+			- POWTWO(vector_dot(oc, cylinder.axis))
 			- cylinder.radius * cylinder.radius;
 	delta = abc.b * abc.b - 4 * (abc.a * abc.c);
 	abc.b = -abc.b;

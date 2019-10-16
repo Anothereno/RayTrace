@@ -36,12 +36,12 @@ double		intersect_ray_cone(t_vector camera, t_vector direct, t_cone cone)
 	tan_angle = tan(cone.angle);
 	tan_angle = tan_angle * tan_angle + 1;
 	abc.a = vector_dot(direct, direct) - tan_angle
-			* pow(vector_dot(direct, cone.axis), 2);
+			* POWTWO(vector_dot(direct, cone.axis));
 	abc.b = (vector_dot(direct, obj_cam) - tan_angle
 			* vector_dot(direct, cone.axis)
 			* vector_dot(obj_cam, cone.axis)) * 2;
 	abc.c = vector_dot(obj_cam, obj_cam) - tan_angle
-			* pow(vector_dot(obj_cam, cone.axis), 2);
+			* POWTWO(vector_dot(obj_cam, cone.axis));
 	delta = abc.b * abc.b - 4 * abc.a * abc.c;
 	if (fabs(delta) < 0.001)
 		return (set_intersect(INF, INF));

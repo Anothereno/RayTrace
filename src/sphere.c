@@ -33,7 +33,7 @@ double		intersect_ray_sphere(t_vector camera, t_vector direct,
 
 	oc = vector_sub(camera, sphere.center);
 	abc.a = vector_dot(direct, direct);
-	abc.b = 2.0f * vector_dot(direct, oc);
+	abc.b = 2.0 * vector_dot(direct, oc);
 	abc.c = vector_dot(oc, oc) - sphere.radius * sphere.radius;
 	discr = abc.b * abc.b - 4 * abc.a * abc.c;
 	if (discr < 0)

@@ -26,5 +26,6 @@ int		main(int argc, char **argv)
 	read_file_count_obj(app, argv);
 	read_file_write_obj(app, argv);
 	start_the_game(app);
+	quit(app);
 	return (0);
 }
