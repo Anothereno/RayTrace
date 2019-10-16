@@ -6,11 +6,11 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 19:14:22 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 19:14:55 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/13 19:15:04 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RTv1.h"
+#include "rtv.h"
 
 double	clamp(int min, int max, int num)
 {
@@ -23,16 +23,24 @@ double	clamp(int min, int max, int num)
 
 void	quit(t_app *app)
 {
-	SDL_FreeSurface(app->sdl->surface);
-	SDL_DestroyWindow(app->sdl->window);
-	SDL_Quit();
-	free(app->sdl);
-	free(app->scene.lights);
-	free(app->scene.cylinders);
-	free(app->scene.cones);
-	free(app->scene.spheres);
-	free(app->scene.planes);
-	free(app);
+	if (app)
+	{
+		SDL_FreeSurface(app->sdl->surface);
+		SDL_DestroyWindow(app->sdl->window);
+		SDL_Quit();
+		free(app->sdl);
+		if (app->scene.lights)
+			free(app->scene.lights);
+		if (app->scene.cylinders)
+			free(app->scene.cylinders);
+		if (app->scene.cones)
+			free(app->scene.cones);
+		if (app->scene.spheres)
+			free(app->scene.spheres);
+		if (app->scene.planes)
+			free(app->scene.planes);
+		free(app);
+	}
 }
 
 void	start_the_game(t_app *app)
@@ -74,7 +82,7 @@ void	redraw(t_app *app)
 		threads_info[i].app = app;
 		if (pthread_create(&threads_info[i].pthread,
 				NULL, draw_thread, &threads_info[i]))
-			ft_error("Threads was crashed");
+			ft_error("Threads was crashed", NULL);
 	}
 	i = -1;
 	while (++i < THREAD_AMOUNT)

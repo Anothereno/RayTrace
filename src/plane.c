@@ -6,11 +6,11 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 17:54:53 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 18:59:51 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/13 19:21:37 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RTv1.h"
+#include "rtv.h"
 
 t_plane		new_plane(t_app *app, t_vector center, t_vector normal)
 {

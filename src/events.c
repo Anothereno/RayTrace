@@ -6,11 +6,11 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 17:45:05 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 17:45:59 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/16 19:38:27 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RTv1.h"
+#include "rtv.h"
 
 int		event_handling(t_app *app)
 {
@@ -21,14 +21,15 @@ int		event_handling(t_app *app)
 	if (app->sdl->event.type == SDL_QUIT
 			|| key[SDL_SCANCODE_ESCAPE])
 		return (0);
-	check_camera(key, app);
 	check_lights(key, app);
 	check_for_redraw(key, app);
 	return (1);
 }
 
-void	ft_error(char *str)
+void	ft_error(char *str, t_app *app)
 {
+	if (app)
+		quit(app);
 	ft_putendl(str);
 	exit(0);
 }

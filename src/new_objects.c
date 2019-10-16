@@ -6,11 +6,11 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 19:04:05 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 19:11:26 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/13 19:12:30 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RTv1.h"
+#include "rtv.h"
 
 void	create_sphere(t_app *app, char **string)
 {

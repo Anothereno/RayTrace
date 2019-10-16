@@ -6,11 +6,11 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 17:49:25 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 18:59:51 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/13 19:18:38 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RTv1.h"
+#include "rtv.h"
 
 void		light_calculate(t_app *app, t_object *object, t_camera *camera)
 {

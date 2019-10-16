@@ -6,53 +6,20 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 17:50:23 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 17:51:59 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/16 19:18:13 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RTv1.h"
+#include "rtv.h"
 
 void	check_for_redraw(const uint8_t *key, t_app *app)
 {
-	if (key[SDL_SCANCODE_Q] || key[SDL_SCANCODE_E]
-			|| key[SDL_SCANCODE_A] || key[SDL_SCANCODE_D]
-			|| key[SDL_SCANCODE_UP] || key[SDL_SCANCODE_DOWN]
-			|| key[SDL_SCANCODE_W] || key[SDL_SCANCODE_S]
-			|| key[SDL_SCANCODE_1] || key[SDL_SCANCODE_2]
-			|| key[SDL_SCANCODE_KP_4] || key[SDL_SCANCODE_KP_6]
+	if (key[SDL_SCANCODE_KP_4] || key[SDL_SCANCODE_KP_6]
 			|| key[SDL_SCANCODE_KP_5] || key[SDL_SCANCODE_KP_8]
 			|| key[SDL_SCANCODE_KP_9] || key[SDL_SCANCODE_KP_3]
 			|| key[SDL_SCANCODE_KP_1] || key[SDL_SCANCODE_KP_MINUS]
 			|| key[SDL_SCANCODE_KP_PLUS])
 		redraw(app);
-}
-
-void	move_camera(t_app *app, double angle)
-{
-	app->camera.position.x = app->camera.position.x
-		+ app->camera.camera_speed * sin(angle);
-	app->camera.position.z = app->camera.position.z
-		+ app->camera.camera_speed * cos(angle);
-}
-
-void	check_camera(const uint8_t *key, t_app *app)
-{
-	if (key[SDL_SCANCODE_Q])
-		app->camera.rotation.y -= app->camera.rotate_speed;
-	if (key[SDL_SCANCODE_E])
-		app->camera.rotation.y += app->camera.rotate_speed;
-	if (key[SDL_SCANCODE_A])
-		move_camera(app, (app->camera.rotation.y - 90) * RAD);
-	if (key[SDL_SCANCODE_D])
-		move_camera(app, (app->camera.rotation.y + 90) * RAD);
-	if (key[SDL_SCANCODE_UP])
-		app->camera.position.y += 0.5f;
-	if (key[SDL_SCANCODE_DOWN])
-		app->camera.position.y -= 0.5f;
-	if (key[SDL_SCANCODE_W])
-		move_camera(app, app->camera.rotation.y * RAD);
-	if (key[SDL_SCANCODE_S])
-		move_camera(app, (app->camera.rotation.y + 180) * RAD);
 }
 
 void	move_light(t_app *app, double angle)

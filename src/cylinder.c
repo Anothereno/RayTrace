@@ -6,11 +6,11 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 17:38:34 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 19:21:08 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/13 19:37:39 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RTv1.h"
+#include "rtv.h"
 
 t_cylinder	new_cylinder(t_app *app, t_vector center,
 		double radius, t_vector rot)
@@ -84,7 +84,6 @@ t_object	find_intersected_cylinders(t_app *app,
 		if (between(length_min, INF, distance) && distance < object.distance)
 		{
 			object.distance = distance;
-			object.axis = app->scene.cylinders[i].axis;
 			object.center = app->scene.cylinders[i].center;
 			object.hit_point = vector_add(camera->position,
 					vector_mult_scal(camera->direct, object.distance));

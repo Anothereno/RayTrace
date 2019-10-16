@@ -6,30 +6,27 @@
 #    By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/09 17:56:15 by hdwarven          #+#    #+#              #
-#    Updated: 2019/09/03 10:27:10 by hdwarven         ###   ########.fr        #
+#    Updated: 2019/10/16 19:04:15 by hdwarven         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
-NAME = wolf3d
+NAME = rtv1
 INCLUDES = -I ./libft \
            -I ./includes \
            -I ./SDL/SDL2.framework/Versions/A/Headers \
            -I ./SDL/SDL2_ttf.framework/Versions/A/Headers
 
 SRC_PATH = src
-SRC_LIST = calculate_distance.c init_hud_and_player.c parse_map.c \
-           changing_fullscreen.c init_sdl_ttf.c raycasting.c \
-           check_events.c init_weapons.c stats_showing.c colorize.c \
-           keys.c stats_weapon.c doors.c load_hud_menu_walls.c \
-           timers_game_loop.c draw.c load_weapon.c validation.c \
-           errors.c  map_processing.c vert_hor_calc.c exit.c menu.c \
-           weapons.c free.c move.c wolf3d.c
+SRC_LIST = camera.c      draw.c        light.c       ray_tracing.c vector1.c \
+           color.c       events.c      main.c        read_file.c   vector2.c \
+           cone.c        init.c        new_objects.c sphere.c \
+           cylinder.c    keyboard.c    plane.c       start.c
 
 SRC = $(addprefix $(SRC_PATH)/, $(SRC_LIST))
 
-OBJ_LIST = $(SRC_LIST:.c=.camera)
+OBJ_LIST = $(SRC_LIST:.c=.o)
 OBJ_PATH = obj
 OBJ = $(addprefix $(OBJ_PATH)/, $(OBJ_LIST))
 
@@ -54,11 +51,11 @@ intro:
 	@echo "\n$(PURPLE)MAKE $(NAME) Start!$(NC)"
 
 $(NAME): $(OBJ)
-	@$(CC) $(CFLAGS) $(INCLUDES) $(LIBS) $(OBJ) -camera $(NAME) $(LIBFT)
+	@$(CC) $(CFLAGS) $(INCLUDES) $(LIBS) $(OBJ) -o $(NAME) $(LIBFT)
 
-$(OBJ_PATH)/%.camera: $(SRC_PATH)/%.c
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	@echo "$(YELLOW)$(NAME): $(notdir $<)$(NC)"
-	@$(CC) $(CFLAGS) $(INCLUDES)  -camera $@ -c $<
+	@$(CC) $(CFLAGS) $(INCLUDES)  -o $@ -c $<
 
 make_obj :
 	@mkdir -p obj

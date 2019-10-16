@@ -6,11 +6,11 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 16:33:04 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 18:59:51 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/13 19:20:48 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RTv1.h"
+#include "rtv.h"
 
 t_cone		new_cone(t_app *app, t_vector center, double angle, t_vector rot)
 {

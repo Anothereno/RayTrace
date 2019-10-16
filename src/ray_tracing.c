@@ -6,11 +6,11 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 18:00:41 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 18:17:29 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/13 18:20:01 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RTv1.h"
+#include "rtv.h"
 
 double		set_intersect(double first, double second)
 {

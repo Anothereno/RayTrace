@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 19:55:35 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 19:58:17 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/16 19:38:27 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,6 +166,7 @@ typedef struct		s_thread
 	t_app			*app;
 }					t_thread;
 
+void				quit(t_app *app);
 void				create_light(t_app *app, char **string);
 void				create_cylinder(t_app *app, char **string);
 void				create_cone(t_app *app, char **string);
@@ -188,7 +189,7 @@ void				set_pixel(SDL_Surface *surface, int x, int y, t_color c);
 void				init_app(t_app *app);
 void				init_objects(t_scene *scene);
 void				read_file_count_obj(t_app *app, char **argv);
-void				ft_error(char *str);
+void				ft_error(char *str, t_app *app);
 void				raytrace(t_app *app, int x, int y);
 t_vector			set_vector(double x, double y, double z);
 double				vector_dot(t_vector first, t_vector second);

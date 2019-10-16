@@ -6,11 +6,11 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 19:15:36 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 19:17:05 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/13 19:17:24 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RTv1.h"
+#include "rtv.h"
 
 t_sphere	new_sphere(t_app *app, t_vector center, double radius)
 {

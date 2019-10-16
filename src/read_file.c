@@ -6,11 +6,11 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 18:40:00 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 19:07:37 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/16 19:38:27 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RTv1.h"
+#include "rtv.h"
 
 int		amount_elements(char **string)
 {
@@ -39,7 +39,7 @@ void	string_processing_counting(char **string, t_app *app, int amount)
 	else if (ft_strequ(*string, "light") && amount == 5)
 		app->scene.lights_amount++;
 	else
-		ft_error("Wrong file");
+		ft_error("Wrong file", app);
 }
 
 void	string_processing_writing(char **string, t_app *app)
@@ -60,7 +60,7 @@ void	string_processing_writing(char **string, t_app *app)
 	else if (ft_strequ(string[0], "light"))
 		create_light(app, string);
 	else
-		ft_error("Wrong file\n");
+		ft_error("Wrong file\n", app);
 }
 
 void	read_file_count_obj(t_app *app, char **argv)
@@ -72,7 +72,7 @@ void	read_file_count_obj(t_app *app, char **argv)
 
 	if ((fd = open(argv[1], O_RDONLY)) < 3)
 		ft_error("Cannot read.\n"
-			"Usage : ./RTv1  configuration_file.scene");
+			"Usage : ./RTv1  configuration_file.scene", app);
 	while (get_next_line(fd, &line))
 	{
 		temp = ft_strsplit(line, ' ');
@@ -93,11 +93,11 @@ void	read_file_write_obj(t_app *app, char **argv)
 
 	if ((fd = open(argv[1], O_RDONLY)) < 3)
 		ft_error("Cannot write.\n"
-			"Usage : ./RTv1  configuration_file");
+			"Usage : ./RTv1  configuration_file", app);
 	else if (app->scene.cameras_amount < 1)
-		ft_error("No camera set\n");
+		ft_error("No camera set\n", app);
 	else if (app->scene.lights_amount < 1)
-		ft_error("No light spot installed\n");
+		ft_error("No light spot installed\n", app);
 	while (get_next_line(fd, &line))
 	{
 		temp = ft_strsplit(line, ' ');

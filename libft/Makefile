@@ -6,7 +6,7 @@
 #    By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/21 13:36:15 by hdwarven          #+#    #+#              #
-#    Updated: 2019/09/03 10:27:10 by hdwarven         ###   ########.fr        #
+#    Updated: 2019/10/16 19:06:45 by hdwarven         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,38 +24,38 @@ SRC = ft_atoi.c ft_bzero.c ft_clear_list.c ft_free_arr.c ft_isalnum.c \
       ft_strncat.c ft_strncmp.c ft_strncpy.c ft_strnequ.c ft_strnew.c \
       ft_strnstr.c ft_strrchr.c ft_strsplit.c ft_strstr.c ft_strsub.c \
       ft_strtrim.c ft_tolower.c ft_toupper.c ft_clear_string_array.c \
-      ft_is_uppercase.c
+      ft_is_uppercase.c ft_clear_split.c get_next_line.c
 
-OBJ = *.camera
+OBJ = *.o
 VAR = default
 
 all: $(NAME)
 
 $(NAME):
-	gcc -Wall -Wextra -Werror -c $(SRC) -I libft.h
-	ar rc $(NAME) $(OBJ)
-	ranlib $(NAME)
+	@gcc -Wall -Wextra -Werror -c $(SRC) -I libft.h
+	@ar rc $(NAME) $(OBJ)
+	@ranlib $(NAME)
 
 norm:
 	norminette -R CheckForbiddenSourceHeader
 
 comp:
-	@gcc -g -Wall -Wextra -Werror -camera a.exe *.c -I libft.h
+	@gcc -g -Wall -Wextra -Werror -o a.exe *.c -I libft.h
 	@./a.exe
 	@rm -r a.*
 
 so :
-	@gcc -g -fPIC -Wall -Werror -Wextra *.c -shared -camera libft.so
+	@gcc -g -fPIC -Wall -Werror -Wextra *.c -shared -position libft.so
 
 sorem:
 	@rm -r *.so*
-	@rm -r *.camera
+	@rm -r *.o
 
 rem:
 	@rm -r a.*
 
 debug:
-	@gcc -g -Wall -Wextra -Werror -camera a.exe *.c -I libft.h
+	@gcc -g -Wall -Wextra -Werror -o a.exe *.c -I libft.h
 clean:
 	@rm -f $(OBJ)
 

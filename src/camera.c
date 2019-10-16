@@ -6,11 +6,11 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 17:58:52 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 19:19:58 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/13 19:20:10 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RTv1.h"
+#include "rtv.h"
 
 void		set_camera(t_app *app, t_vector position, t_vector rotation)
 {

@@ -6,11 +6,11 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 19:31:51 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 19:32:07 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/13 19:32:17 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RTv1.h"
+#include "rtv.h"
 
 t_vector	set_vector(double x, double y, double z)
 {

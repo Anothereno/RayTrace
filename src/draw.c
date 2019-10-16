@@ -6,11 +6,11 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 17:36:17 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 17:36:41 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/13 17:37:18 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RTv1.h"
+#include "rtv.h"
 
 void	set_pixel(SDL_Surface *surface, int x, int y, t_color c)
 {
