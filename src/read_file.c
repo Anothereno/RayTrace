@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 18:40:00 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/16 19:38:27 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/17 12:13:01 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,9 @@ void	read_file_count_obj(t_app *app, char **argv)
 	char	**temp;
 	int		amount;
 
-	if ((fd = open(argv[1], O_RDONLY)) < 3)
+	if ((fd = open(argv[1], O_RDWR)) < 3)
 		ft_error("Cannot read.\n"
-			"Usage : ./RTv1  configuration_file.scene", app);
+			"Usage : ./RTv1  configuration_file", app);
 	while (get_next_line(fd, &line))
 	{
 		temp = ft_strsplit(line, ' ');

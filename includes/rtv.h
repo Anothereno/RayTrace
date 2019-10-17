@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 19:55:35 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/16 19:38:27 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/17 15:49:01 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@
 # include <stdlib.h>
 # include <string.h>
 # include <pthread.h>
-# include <SDL.h>
+# include "SDL.h"
+//# include </Users/hdwarven/.brew/Cellar/sdl2/2.0.10/include/SDL.h>
 # define RAD 0.0174533f
 # define SCREEN_WIDTH 400
 # define SCREEN_HEIGHT 400
@@ -167,6 +168,7 @@ typedef struct		s_thread
 	t_app			*app;
 }					t_thread;
 
+t_vector			hit_point(t_camera *camera, double dist);
 void				quit(t_app *app);
 void				create_light(t_app *app, char **string);
 void				create_cylinder(t_app *app, char **string);

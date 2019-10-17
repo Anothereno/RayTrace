@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 19:14:22 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 19:15:04 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/17 11:24:07 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	redraw(t_app *app)
 		threads_info[i].app = app;
 		if (pthread_create(&threads_info[i].pthread,
 				NULL, draw_thread, &threads_info[i]))
-			ft_error("Threads was crashed", NULL);
+			ft_error("Threads was crashed", app);
 	}
 	i = -1;
 	while (++i < THREAD_AMOUNT)

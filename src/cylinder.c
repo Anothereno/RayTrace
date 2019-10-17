@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 17:38:34 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/13 19:37:39 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/17 11:24:07 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ t_object	find_intersected_cylinders(t_app *app,
 		{
 			object.distance = distance;
 			object.center = app->scene.cylinders[i].center;
+//			object.center = app->scene.cylinders[i].center;
 			object.hit_point = vector_add(camera->position,
 					vector_mult_scal(camera->direct, object.distance));
 			normal_cylinder(app, &app->scene.cylinders[i], &object);

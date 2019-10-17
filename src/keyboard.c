@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 17:50:23 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/16 19:18:13 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/17 11:24:07 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,11 @@ void	check_lights(const uint8_t *key, t_app *app)
 	if (key[SDL_SCANCODE_KP_8])
 		move_light(&app->scene, app->camera.rotation.y * RAD);
 	if (key[SDL_SCANCODE_KP_9])
-		app->scene.lights[app->scene.cur_light_control].position.y += 2.1f;
+		app->scene.lights[app->scene.cur_light_control].position.y += 0.5;
 	if (key[SDL_SCANCODE_KP_3])
-		app->scene.lights[app->scene.cur_light_control].position.y -= 2.1f;
+		app->scene.lights[app->scene.cur_light_control].position.y -= 0.5;
 	if (key[SDL_SCANCODE_KP_PLUS])
-		app->scene.lights[app->scene.cur_light_control].intensity += 0.1f;
+		app->scene.lights[app->scene.cur_light_control].intensity += 0.1;
 	if (key[SDL_SCANCODE_KP_MINUS])
-		app->scene.lights[app->scene.cur_light_control].intensity -= 0.1f;
+		app->scene.lights[app->scene.cur_light_control].intensity -= 0.1;
 }

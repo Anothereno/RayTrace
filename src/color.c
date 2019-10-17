@@ -33,9 +33,9 @@ void	sum_color(t_color *first, t_color *second)
 t_color	to_hsv(int rand_num)
 {
 	t_color color;
-	double	calc_color;
+	int		calc_color;
 
-	calc_color = (1 - fabs(fmod(rand_num / 60.0, 2) - 1)) * 255;
+	calc_color = (int)(1 - fabs(fmod(rand_num / 60.0, 2) - 1)) * 255;
 	if (rand_num >= 0 && rand_num < 60)
 		color = set_color(255, calc_color, 0);
 	else if (rand_num >= 60 && rand_num < 120)
