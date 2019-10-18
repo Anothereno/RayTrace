@@ -85,7 +85,6 @@ t_object	find_intersected_cylinders(t_app *app,
 		{
 			object.distance = distance;
 			object.center = app->scene.cylinders[i].center;
-//			object.center = app->scene.cylinders[i].center;
 			object.hit_point = vector_add(camera->position,
 					vector_mult_scal(camera->direct, object.distance));
 			normal_cylinder(app, &app->scene.cylinders[i], &object);

@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 18:00:41 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/17 11:24:07 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/17 17:59:41 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,14 @@ void		raytrace(t_app *app, int x, int y)
 		object = find_intersected_cones(app, 1, object, &camera);
 	if (app->scene.planes_amount != 0)
 		object = find_intersected_planes(app, object, &camera);
-	if (!object.flag)
+	if (object.flag && object.distance < INF)
 	{
-		set_pixel(app->sdl->surface, x, y, &app->black);
+		light_calculate(app, &object, &camera);
+		pixel_color = pallete(object.color, object.diffuse);
+		temp_color = pallete(app->white, object.specular);
+		sum_color(&pixel_color, &temp_color);
+		set_pixel(app->sdl->surface, x, y, &pixel_color);
 		return ;
 	}
-	light_calculate(app, &object, &camera);
-	pixel_color = pallete(object.color, object.diffuse);
-	temp_color = pallete(app->white, object.specular);
-	sum_color(&pixel_color, &temp_color);
-	set_pixel(app->sdl->surface, x, y, &pixel_color);
+	set_pixel(app->sdl->surface, x, y, &app->black);
 }

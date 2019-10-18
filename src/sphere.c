@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 19:15:36 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/17 17:26:56 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/17 17:38:45 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ t_object	find_intersected_spheres(t_app *app,
 			object.distance = distance;
 			object.hit_point = vector_add(camera->position,
 				vector_mult_scal(camera->direct, object.distance));
-//			object.center = hit_point(camera, distance);
 			object.center = app->scene.spheres[i].center;
 			object.normal = vector_sub(object.hit_point, object.center);
 			object.normal = (normalize(object.normal));

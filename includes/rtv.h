@@ -6,7 +6,7 @@
 /*   By: hdwarven <hdwarven@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/13 19:55:35 by hdwarven          #+#    #+#             */
-/*   Updated: 2019/10/17 15:49:01 by hdwarven         ###   ########.fr       */
+/*   Updated: 2019/10/18 15:38:23 by hdwarven         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # include <string.h>
 # include <pthread.h>
 # include "SDL.h"
-//# include </Users/hdwarven/.brew/Cellar/sdl2/2.0.10/include/SDL.h>
 # define RAD 0.0174533f
 # define SCREEN_WIDTH 400
 # define SCREEN_HEIGHT 400
@@ -151,6 +150,8 @@ typedef struct		s_light_spot
 {
 	t_vector	light_direct;
 	double		light_distance;
+	double		dot;
+	t_camera	shadow;
 }					t_light_spot;
 
 typedef struct		s_abc
